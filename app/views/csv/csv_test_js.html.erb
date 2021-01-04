@@ -1,0 +1,115 @@
+<style>
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td {
+  font-size: 12px;
+  padding: .2em .5em;
+  border: solid 1px #ccc;
+}
+</style>
+
+<h1>CSVファイルの出力サンプル</h1>
+
+<h2>とりあえずの出力ここから</h2>
+<div id = "csv_test"></div>
+<h2>とりあえずの出力はここまで</h2>
+<br>
+<br>
+<h2>配列変換後のデータ出力はここから</h2>
+<div id = "csv_test_array"></div>
+<h2>配列変換後のデータ出力ここまで</h2>
+<p>consoleで配列になっているのが確認できる</p>
+<br>
+<br>
+<h2>テーブルに落とし込む</h2>
+<table id = "csv_table"></table>
+
+<script>
+const output_svg = document.getElementById('csv_test');
+
+function csv_data(dataPath) {
+    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    request.addEventListener('load', (event) => { // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        output_svg.innerHTML = response; // 表示
+    });
+    request.open('GET', dataPath, true); // csvのパスを指定
+    request.send();
+}
+csv_data('test_1.csv');
+
+//上のコードのみでとりあえず出力は出来る
+
+const output_csv = document.getElementById('csv_test_array');
+
+function csv_data_output_array(dataPath) {
+    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    request.addEventListener('load', (event) => { // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        csv_array(response); //csv_arrayの関数を実行
+    });
+    request.open('GET', dataPath, true); // csvのパスを指定
+    request.send();
+}
+
+function csv_array(data) {
+    var today = new Date();
+    var changeToday = (today.getFullYear() + '/' + today.getMonth()+1 + '/' + today.getDate());
+    var newday = "2021/1/2"
+    console.log(newday);
+    console.log(changeToday);
+    console.log(today);
+    const dataArray = []; //配列を用意
+    const dataString = data.split('\n'); //改行で分割
+    for (let i = 0; i < dataString.length; i++) { //あるだけループ
+        dataArray[i] = dataString[i].split(',');
+    }
+    for (let i= 0; i < dataArray.length; i++){
+        if (dataArray[i][1] == newday) {
+            outputDays = dataArray[i];
+        }
+    }
+    console.log(outputDays);
+    output_csv.innerHTML = dataArray; //表示
+    console.log(dataArray);
+    console.log(dataArray[1][1])
+
+}
+csv_data_output_array('test_1.csv');
+
+//データをArray型に変換するのはここまで
+
+//tableに対して出力
+const output_csv_for_table = document.getElementById('csv_table');　//出力箇所の取得
+
+function csv_data_for_table(dataPath) {
+    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    request.addEventListener('load', (event) => { // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        csv_array_for_table(response); //csv_arrayの関数を実行
+    });
+    request.open('GET', dataPath, true); // csvのパスを指定
+    request.send();
+}
+
+function csv_array_for_table(data) {
+    const dataArray = []; //配列を用意
+    const dataString = data.split('\n'); //改行で分割
+    for (let i = 0; i < dataString.length; i++) { //あるだけループ
+        dataArray[i] = dataString[i].split(',');
+    }
+    let insertElement = ''; //テーブルタグに表示する用の変数
+    dataArray.forEach((element) => { //配列の中身を表示
+        insertElement += '<tr>';
+        element.forEach((childElement) => {
+            insertElement += `<td>${childElement}</td>`
+        });
+        insertElement += '</tr>';
+    });
+    output_csv_for_table.innerHTML = insertElement; // 表示
+}
+csv_data_for_table('test_1.csv'); // csvのパス
+</script>
