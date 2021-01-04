@@ -11,8 +11,10 @@ td {
 }
 </style>
 
+<%= link_to 'rubyのcsv',csv_test_ruby_path %>
+<br>
 <h1>CSVファイルの出力サンプル</h1>
-
+<%= @test %>
 <h2>とりあえずの出力ここから</h2>
 <div id = "csv_test"></div>
 <h2>とりあえずの出力はここまで</h2>
@@ -101,7 +103,7 @@ function csv_array_for_table(data) {
     const dataArray = []; //配列を用意
     const dataString = data.split('\n'); //改行で分割
     for (let i = 0; i < dataString.length; i++) { //あるだけループ
-        dataArray[i] = dataString[i].split(',');
+        dataArray[i] = dataString[i].split(','); //改行コードで区切ったデータをさらにカンマで区切り、行毎のデータにする
     }
     console.log(dataString);
     const outputData = []; //日付指定でだし分けたい場合に使用

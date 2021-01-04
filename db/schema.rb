@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2021_01_04_055213) do
 
-  create_table "csvs", force: :cascade do |t|
+  create_table "csvtests", force: :cascade do |t|
     t.string "name"
     t.integer "progress_days"
     t.datetime "created_at", null: false

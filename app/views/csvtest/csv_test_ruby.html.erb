@@ -1,0 +1,20 @@
+<%= link_to 'jsのcsv',csv_test_js_path %>
+
+<h1>public/test_1.csvの出力forRuby</h1>
+<br>
+<br>
+<h2>とりあえず出力</h2>
+<% @csvtext.each do |text|%>
+    <p><%= text %></p>
+<% end %>
+<h2>とりあえず出力ここまで</h2>
+<h2>テーブルに落とし込む</h2>
+<table style="border: 1px solid black;">
+    <% @csvtext.each do |text| %>
+        <tr>
+            <% text.each do |val|%>
+                <td style="width: auto;border: 1px solid gray;"><%= val %></td>
+            <% end %>
+         </tr>
+    <% end %>
+</table>
