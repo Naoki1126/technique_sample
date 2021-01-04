@@ -55,13 +55,11 @@ function csv_data_output_array(dataPath) {
     request.send();
 }
 
+var today = new Date();
+var changeToday = (today.getFullYear() + '/' + Number(today.getMonth()+1) + '/' + Number(today.getDate()));
+
 function csv_array(data) {
-    var today = new Date();
-    var changeToday = (today.getFullYear() + '/' + today.getMonth()+1 + '/' + today.getDate());
     var newday = "2021/1/2"
-    console.log(newday);
-    console.log(changeToday);
-    console.log(today);
     const dataArray = []; //配列を用意
     const dataString = data.split('\n'); //改行で分割
     for (let i = 0; i < dataString.length; i++) { //あるだけループ
@@ -95,20 +93,33 @@ function csv_data_for_table(dataPath) {
     request.send();
 }
 
+var testDateChange = new Date('2020/1/2');
+console.log(testDateChange);
+
 function csv_array_for_table(data) {
+    var todayDate = new Date()
     const dataArray = []; //配列を用意
     const dataString = data.split('\n'); //改行で分割
     for (let i = 0; i < dataString.length; i++) { //あるだけループ
         dataArray[i] = dataString[i].split(',');
     }
+    console.log(dataString);
+    const outputData = []; //日付指定でだし分けたい場合に使用
+    for (let i = 0; i < dataArray.length; i++){
+        if (new Date(dataArray[i][1]) < todayDate ){ //配列の日付の部分をdateに入れて日付に変換し今日の日付と比較
+            outputData[i] = dataArray[i]; //trueであれば定数にいれる
+        }
+    }
+    console.log(outputData);
     let insertElement = ''; //テーブルタグに表示する用の変数
-    dataArray.forEach((element) => { //配列の中身を表示
+    outputData.forEach((element) => { //表示したい配列の中身を表示
         insertElement += '<tr>';
         element.forEach((childElement) => {
             insertElement += `<td>${childElement}</td>`
         });
         insertElement += '</tr>';
     });
+    console.log(changeToday);
     output_csv_for_table.innerHTML = insertElement; // 表示
 }
 csv_data_for_table('test_1.csv'); // csvのパス
