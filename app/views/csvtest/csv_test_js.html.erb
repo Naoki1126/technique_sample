@@ -28,8 +28,14 @@ td {
 <br>
 <h2>テーブルに落とし込む</h2>
 <table id = "csv_table"></table>
+<h2>テーブルに落とし込むここまで
+<br>
+<br>
+<h2>連想配列に変換</h2>
+<br><br>
 
 <script>
+// とりあえずの出力
 const output_svg = document.getElementById('csv_test');
 
 function csv_data(dataPath) {
@@ -45,6 +51,8 @@ csv_data('test_1.csv');
 
 //上のコードのみでとりあえず出力は出来る
 
+
+//データをArray型に変換するのはここから
 const output_csv = document.getElementById('csv_test_array');
 
 function csv_data_output_array(dataPath) {
@@ -79,10 +87,9 @@ function csv_array(data) {
 
 }
 csv_data_output_array('test_1.csv');
-
 //データをArray型に変換するのはここまで
 
-//tableに対して出力
+//tableに対して出力ここから
 const output_csv_for_table = document.getElementById('csv_table');　//出力箇所の取得
 
 function csv_data_for_table(dataPath) {
@@ -125,4 +132,39 @@ function csv_array_for_table(data) {
     output_csv_for_table.innerHTML = insertElement; // 表示
 }
 csv_data_for_table('test_1.csv'); // csvのパス
+//テーブルに対しての出力ここまで
+
+  static convertCsvToArray(csv) {
+    //header:CSV1行目の項目 :csvRows:項目に対する値
+    const [header, ...csvRows] = csv.split('\n').filter(function (row) {
+      if (row !== '') {
+        return row;
+      }
+    }).map(function (row) {
+      return row.split(',');
+    });
+
+    let arrayInKeyAndValue;
+    let resultArray;
+    let tmpResultArray;
+
+    tmpResultArray = csvRows.map(function (r) {
+      arrayInKeyAndValue = header.map(function (_, index) {
+        //ヘッダーの空白文字を削除。　keyとvalueに値をセット
+        return ({ key: header[index].replace(/\s+/g, ''), value: r[index] });
+      });
+      arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
+        //{key: "物", value: "MacBook", メーカー: "apple", 値段: "3000"}を作成
+        previous[current.key] = current.value;
+        return previous;
+      }, {});
+      return arrayInKeyAndValue;
+    });
+
+    resultArray = tmpResultArray.reduce(function (previous, current, index) {
+      previous[index] = current;
+      return previous;
+    }, {});
+    return resultArray;
+  }
 </script>
