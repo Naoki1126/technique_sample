@@ -42,12 +42,12 @@ function csv_data(dataPath) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
     request.addEventListener('load', (event) => { // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
-        output_svg.innerHTML = response; // 表示
+        // output_svg.innerHTML = response; // 表示
+        convertCsvToArray(response);
     });
     request.open('GET', dataPath, true); // csvのパスを指定
     request.send();
 }
-csv_data('test_1.csv');
 
 //上のコードのみでとりあえず出力は出来る
 
@@ -115,7 +115,7 @@ function csv_array_for_table(data) {
     console.log(dataString);
     const outputData = []; //日付指定でだし分けたい場合に使用
     for (let i = 0; i < dataArray.length; i++){
-        if (new Date(dataArray[i][1]) > todayDate ){ //配列の日付の部分をdateに入れて日付に変換し今日の日付と比較
+        if (new Date(dataArray[i][1]) < todayDate ){ //配列の日付の部分をdateに入れて日付に変換し今日の日付と比較
             outputData[i] = dataArray[i]; //trueであれば定数にいれる
         }
     }
@@ -133,15 +133,30 @@ function csv_array_for_table(data) {
 }
 csv_data_for_table('test_1.csv'); // csvのパス
 //テーブルに対しての出力ここまで
-//テストコメント
-  static convertCsvToArray(csv) {
+
+//連想配列
+
+const hash_svg = document.getElementById('csv_test');
+
+function csv_data_for_hash(dataPath) {
+    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    request.addEventListener('load', (event) => { // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        // output_svg.innerHTML = response; // 表示
+        convertCsvToArray(response);
+    });
+    request.open('GET', dataPath, true); // csvのパスを指定
+    request.send();
+}
+
+function convertCsvToArray(csv) {
     //header:CSV1行目の項目 :csvRows:項目に対する値
     const [header, ...csvRows] = csv.split('\n').filter(function (row) {
-      if (row !== '') {
+        if (row !== '') {
         return row;
-      }
+        }
     }).map(function (row) {
-      return row.split(',');
+        return row.split(',');
     });
 
     let arrayInKeyAndValue;
@@ -149,22 +164,27 @@ csv_data_for_table('test_1.csv'); // csvのパス
     let tmpResultArray;
 
     tmpResultArray = csvRows.map(function (r) {
-      arrayInKeyAndValue = header.map(function (_, index) {
+        arrayInKeyAndValue = header.map(function (_, index) {
         //ヘッダーの空白文字を削除。　keyとvalueに値をセット
         return ({ key: header[index].replace(/\s+/g, ''), value: r[index] });
-      });
-      arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
+        });
+        arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
         //{key: "物", value: "MacBook", メーカー: "apple", 値段: "3000"}を作成
         previous[current.key] = current.value;
         return previous;
-      }, {});
-      return arrayInKeyAndValue;
+        }, {});
+        return arrayInKeyAndValue;
     });
 
     resultArray = tmpResultArray.reduce(function (previous, current, index) {
-      previous[index] = current;
-      return previous;
+        previous[index] = current;
+        return previous;
     }, {});
+    console.log(resultArray);
     return resultArray;
-  }
+}
+
+const csvData = csv_data_for_hash('test_1.csv');//取得したCSVデータ
+console.log(csvData);
+// const resultArray = 
 </script>
