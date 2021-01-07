@@ -32,6 +32,7 @@ td {
 <br>
 <br>
 <h2>連想配列に変換</h2>
+<div id = 'csv_test_hash'></div>
 <br><br>
 
 <script>
@@ -136,7 +137,7 @@ csv_data_for_table('test_1.csv'); // csvのパス
 
 //連想配列
 
-const hash_svg = document.getElementById('csv_test');
+const hashSvg = document.getElementById('csv_test_hash');
 
 function csv_data_for_hash(dataPath) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
@@ -159,9 +160,9 @@ function convertCsvToArray(csv) {
         return row.split(',');
     });
 
-    let arrayInKeyAndValue;
-    let resultArray;
-    let tmpResultArray;
+    var arrayInKeyAndValue;
+    var resultArray;
+    var tmpResultArray;
 
     tmpResultArray = csvRows.map(function (r) {
         arrayInKeyAndValue = header.map(function (_, index) {
@@ -169,22 +170,45 @@ function convertCsvToArray(csv) {
         return ({ key: header[index].replace(/\s+/g, ''), value: r[index] });
         });
         arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
-        //{key: "物", value: "MacBook", メーカー: "apple", 値段: "3000"}を作成
+        // {key: "value",key: value,key: value}を作成
         previous[current.key] = current.value;
         return previous;
         }, {});
         return arrayInKeyAndValue;
     });
+    console.log(tmpResultArray);
+    console.log(tmpResultArray.length);
 
-    resultArray = tmpResultArray.reduce(function (previous, current, index) {
-        previous[index] = current;
-        return previous;
-    }, {});
-    console.log(resultArray);
-    return resultArray;
+    // resultArray = tmpResultArray.reduce(function (previous, current, index) {
+    //     previous[index] = current;
+    //     return previous;
+    // }, {});
+    insertElement = '';
+    for( var i = 0; i < tmpResultArray.length; i++){
+        insertElement += '<div><span>'
+        insertElement += `${tmpResultArray[i]["Id"]}`
+        
+        insertElement += `${tmpResultArray[i]['日付']}`
+        insertElement += `${tmpResultArray[i]['テキスト']}`
+        insertElement += `${tmpResultArray[i]['作成者']}`
+        insertElement +='</span></div>'
+       
+    }
+    console.log(insertElement);
+    return hashSvg.innerHTML = insertElement;
+    // resultArray.forEach((element) => { //表示したい配列の中身を表示
+    //     insertElement += '<tr>';
+    //     element.forEach((childElement) => {
+    //         insertElement += `<td>${childElement}</td>`
+    //     });
+    //     insertElement += '</tr>';
+    // });;
+     // 表示
 }
+    // return resultArray;
 
-const csvData = csv_data_for_hash('test_1.csv');//取得したCSVデータ
+var csvData = csv_data_for_hash('test_1.csv');//取得したCSVデータ
 console.log(csvData);
 // const resultArray = 
+
 </script>
