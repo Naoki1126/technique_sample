@@ -108,7 +108,7 @@ function csv_array_for_table(data) {
     console.log(dataString);
     const outputData = []; //日付指定でだし分けたい場合に使用
     for (let i = 0; i < dataArray.length; i++){
-        if (new Date(dataArray[i][1]) < todayDate ){ //配列の日付の部分をdateに入れて日付に変換し今日の日付と比較
+        if (new Date(dataArray[i][1]) > todayDate ){ //配列の日付の部分をdateに入れて日付に変換し今日の日付と比較
             outputData[i] = dataArray[i]; //trueであれば定数にいれる
         }
     }
