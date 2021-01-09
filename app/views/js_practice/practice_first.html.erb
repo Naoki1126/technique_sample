@@ -45,8 +45,19 @@
 .fukidashi_inner_text{
     padding: 0 5%;
 }
+
+#morebutton{
+    width: 100%;
+    height: 39px;
+    background: white;
+    text-align: center;
+}
+.morebutton_parent{
+    width:50%;
+    margin: 0 auto;
+}
 </style>
-<%= @since_registration = 5 %>
+<% @since_registration = 5 %>
 <h2>csvファイルの連想配列出力</h2>
 <p>メッセージ風</p>
 
@@ -55,12 +66,16 @@
 
 const outputForHash = document.getElementById('output_for_hash');
 
-function csv_data_for_hash(dataPath) {
+function csvDataForHash(dataPath) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
     request.addEventListener('load', (event) => { // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
         // output_svg.innerHTML = response; // 表示
-        convertCsvToArray(response);
+        var responseArray = convertCsvToArray(response);
+        var [resultHtml,displayTextCount] = responseHtml(responseArray);
+        outputForHash.innerHTML = resultHtml;
+        console.log(responseHtml(responseArray));
+
     });
     request.open('GET', dataPath, true); // csvのパスを指定
     request.send();
@@ -92,45 +107,51 @@ function convertCsvToArray(csv) {
         }, {});
         return arrayInKeyAndValue;
     });
+    console.log(tmpResultArray);
+    return tmpResultArray
+}
+
+function responseHtml(csvArrayData){
     var today = new Date();
     var changeFormatToday = (today.getFullYear() + '/' + Number(today.getMonth()+1) + '/' + Number(today.getDate()));
-    var openDate;
-    var changeFormatOpenDate;
+    var openDate;// 連想配列内の日付を代入するための変数を用意
+    var changeFormatOpenDate; //連想配列内の日付の形式を変換するための変数を定義
     var sinceRegistration = `<%= @since_registration %>` //登録日よりの経過日数をRubyより渡す
-    console.log(sinceRegistration,typeof(sinceRegistration));
-    console.log(today);
-    console.log(changeFormatToday);
-    insertElement = '' //innerHTMLに渡すための変数、ここにHTML要素を全て入れ込む
-    
-    for (var i = 0; i < tmpResultArray.length; i++){
-        openDate = new Date(tmpResultArray[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
-        perseOpenDate = parseInt(tmpResultArray[i]['Id']); //csvファイルのIDをintに変換
+    var openTextCount = 1;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
+    var insertElement = '' //innerHTMLに渡すための変数、ここにHTML要素を全て入れ込む
+    for (var i = 0; i < csvArrayData.length; i++){
+        openDate = new Date(csvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
+        perseOpenDate = parseInt(csvArrayData[i]['Id']); //csvファイルのIDをintに変換
         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
-        if (changeFormatOpenDate === changeFormatToday || parseInt(tmpResultArray[i]['Id']) <= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+        if (changeFormatOpenDate === changeFormatToday || parseInt(csvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
             insertElement += '<div class="message_outline_parent">'
             insertElement += '<div class="message_icon"></div>'
             insertElement += '<div class="fukidashi" style="color:blue">'
             insertElement += '<p class="fukidashi_inner_text">'
-            insertElement += tmpResultArray[i]['テキスト']
+            insertElement += csvArrayData[i]['テキスト']
             insertElement += '</p>'
             insertElement += '</div>'
             insertElement += '</div>'
-            insertElement += `<p class='output_text_relese_date'>${tmpResultArray[i]['日付']}</p>`
+            insertElement += `<p class='output_text_relese_date'>${csvArrayData[i]['日付']}</p>`
+            openTextCount++;
+            if (i % 10 == 0 ){
+                insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
+                break;
+            }
         }
     }
-    console.log(tmpResultArray[3]["日付"].length);
-    console.log(typeof(tmpResultArray[2]['Id']));
-    outputForHash.innerHTML = insertElement;
-
-    // resultArray = tmpResultArray.reduce(function (previous, current, index) {
-    //     previous[index] = current;
-    //     return previous;
-    // }, {});
-    // console.log(resultArray);
-    // return resultArray;
+    console.log(openTextCount);
+    console.log(csvArrayData[3]["日付"].length);
+    console.log(typeof(csvArrayData[2]['Id']));
+    console.log(insertElement);
+    return [insertElement,openTextCount];
 }
 
-csv_data_for_hash('test_1.csv');//取得したCSVデータ
-// const resultArray = 
+function moreButtonClick(){
+    var morebutton = document.getElementById('morebutton');
+    console.log(morebutton);
+}
 
+csvDataForHash('test_1.csv');//取得したCSVデータ
+// const resultArray = 
 </script>
