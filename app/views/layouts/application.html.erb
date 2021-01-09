@@ -9,7 +9,16 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
+  <body style="width: 320px;">
     <%= yield %>
   </body>
+
+<script type="text/javascript">
+$(function() {
+  var viewport = document.createElement('meta');
+  viewport.setAttribute('name', 'viewport');
+  viewport.setAttribute('content', 'width=320');
+  document.getElementsByTagName('head')[0].appendChild(viewport);
+});
+</script>
 </html>
