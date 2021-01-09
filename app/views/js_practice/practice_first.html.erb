@@ -64,18 +64,109 @@
 <div id = 'output_for_hash'></div>
 <script>
 
-const outputForHash = document.getElementById('output_for_hash');
+// const outputForHash = document.getElementById('output_for_hash');
 
-function csvDataForHash(dataPath) {
+// function csvDataForHash(dataPath) {
+//     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+//     request.addEventListener('load', (event) => { // ロードさせ実行
+//         const response = event.target.responseText; // 受け取ったテキストを返す
+//         // output_svg.innerHTML = response; // 表示
+//         var responseArray = convertCsvToArray(response);
+//         var [resultHtml,displayTextCount] = responseHtml(responseArray);
+//         outputForHash.innerHTML = resultHtml;
+//         console.log(responseHtml(responseArray));
+
+//     });
+//     request.open('GET', dataPath, true); // csvのパスを指定
+//     request.send();
+// }
+
+// function convertCsvToArray(csv) {
+//     //header:CSV1行目の項目 :csvRows:項目に対する値
+//     const [header, ...csvRows] = csv.split('\n').filter(function (row) {
+//         if (row !== '') {
+//         return row;
+//         }
+//     }).map(function (row) {
+//         return row.split(',');
+//     });
+
+//     let arrayInKeyAndValue;
+//     let resultArray;
+//     let tmpResultArray;
+
+//     tmpResultArray = csvRows.map(function (r) {
+//         arrayInKeyAndValue = header.map(function (_, index) {
+//         //ヘッダーの空白文字を削除。　keyとvalueに値をセット
+//         return ({ key: header[index].replace(/\s+/g, ''), value: r[index] });
+//         });
+//         arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
+//         //{key: "物", value: "MacBook", メーカー: "apple", 値段: "3000"}を作成
+//         previous[current.key] = current.value;
+//         return previous;
+//         }, {});
+//         return arrayInKeyAndValue;
+//     });
+//     console.log(tmpResultArray);
+//     return tmpResultArray
+// }
+
+// function responseHtml(csvArrayData){
+//     var today = new Date();
+//     var changeFormatToday = (today.getFullYear() + '/' + Number(today.getMonth()+1) + '/' + Number(today.getDate()));
+//     var openDate;// 連想配列内の日付を代入するための変数を用意
+//     var changeFormatOpenDate; //連想配列内の日付の形式を変換するための変数を定義
+//     var sinceRegistration = `<%= @since_registration %>` //登録日よりの経過日数をRubyより渡す
+//     var openTextCount = 1;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
+//     var insertElement = '' //innerHTMLに渡すための変数、ここにHTML要素を全て入れ込む
+//     for (var i = 0; i < csvArrayData.length; i++){
+//         openDate = new Date(csvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
+//         perseOpenDate = parseInt(csvArrayData[i]['Id']); //csvファイルのIDをintに変換
+//         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
+//         if (changeFormatOpenDate === changeFormatToday || parseInt(csvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+//             insertElement += '<div class="message_outline_parent">'
+//             insertElement += '<div class="message_icon"></div>'
+//             insertElement += '<div class="fukidashi" style="color:blue">'
+//             insertElement += '<p class="fukidashi_inner_text">'
+//             insertElement += csvArrayData[i]['テキスト']
+//             insertElement += '</p>'
+//             insertElement += '</div>'
+//             insertElement += '</div>'
+//             insertElement += `<p class='output_text_relese_date'>${csvArrayData[i]['日付']}</p>`
+//             openTextCount++;
+//             if (i % 10 == 0 ){
+//                 insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
+//                 break;
+//             }
+//         }
+//     }
+//     console.log(openTextCount);
+//     console.log(csvArrayData[3]["日付"].length);
+//     console.log(typeof(csvArrayData[2]['Id']));
+//     console.log(insertElement);
+//     return [insertElement,openTextCount];
+// }
+
+// function moreButtonClick(){
+//     var morebutton = document.getElementById('morebutton');
+//     console.log(morebutton);
+// }
+
+// var 
+// csvDataForHash('test_1.csv');//取得したCSVデータ
+// const resultArray = 
+
+
+const outputTargetElement = document.getElementById('output_for_hash');
+function csvDataOutput(dataPath) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
     request.addEventListener('load', (event) => { // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
         // output_svg.innerHTML = response; // 表示
         var responseArray = convertCsvToArray(response);
-        var [resultHtml,displayTextCount] = responseHtml(responseArray);
-        outputForHash.innerHTML = resultHtml;
-        console.log(responseHtml(responseArray));
-
+        var resultHtml = responseHtml(responseArray);
+        outputTargetElement.innerHTML = resultHtml;
+        // console.log(responseHtml(responseArray));
     });
     request.open('GET', dataPath, true); // csvのパスを指定
     request.send();
@@ -111,19 +202,27 @@ function convertCsvToArray(csv) {
     return tmpResultArray
 }
 
-function responseHtml(csvArrayData){
+function responseHtml(csvArrayData,displayTextCount = 0){
     var today = new Date();
     var changeFormatToday = (today.getFullYear() + '/' + Number(today.getMonth()+1) + '/' + Number(today.getDate()));
     var openDate;// 連想配列内の日付を代入するための変数を用意
     var changeFormatOpenDate; //連想配列内の日付の形式を変換するための変数を定義
     var sinceRegistration = `<%= @since_registration %>` //登録日よりの経過日数をRubyより渡す
-    var openTextCount = 1;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
+    var openTextCount = 0;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
     var insertElement = '' //innerHTMLに渡すための変数、ここにHTML要素を全て入れ込む
+    if (displayTextCount !== 0 ){
+        openTextCount = displayTextCount;
+    }
+    console.log(displayTextCount);
     for (var i = 0; i < csvArrayData.length; i++){
         openDate = new Date(csvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
         perseOpenDate = parseInt(csvArrayData[i]['Id']); //csvファイルのIDをintに変換
         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
         if (changeFormatOpenDate === changeFormatToday || parseInt(csvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+            if (displayTextCount >= 10 && i <= displayTextCount){
+                continue;
+
+            }
             insertElement += '<div class="message_outline_parent">'
             insertElement += '<div class="message_icon"></div>'
             insertElement += '<div class="fukidashi" style="color:blue">'
@@ -134,24 +233,50 @@ function responseHtml(csvArrayData){
             insertElement += '</div>'
             insertElement += `<p class='output_text_relese_date'>${csvArrayData[i]['日付']}</p>`
             openTextCount++;
-            if (i % 10 == 0 ){
-                insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
-                break;
-            }
+             if (openTextCount % 10 === 0 ){
+            insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div><div class="moreDisplayCsv"></div>'
+            break;
+        }
         }
     }
-    console.log(openTextCount);
-    console.log(csvArrayData[3]["日付"].length);
-    console.log(typeof(csvArrayData[2]['Id']));
-    console.log(insertElement);
-    return [insertElement,openTextCount];
+    // console.log(openTextCount);
+    // console.log(csvArrayData[3]["日付"].length);
+    // console.log(typeof(csvArrayData[2]['Id']));
+    // console.log(insertElement);
+    return insertElement;
 }
 
-function moreButtonClick(){
+window.onload = function(){
     var morebutton = document.getElementById('morebutton');
-    console.log(morebutton);
+    var messageParent = document.getElementsByClassName('message_outline_parent');
+    morebutton.onclick = function(){
+        morebutton.remove();
+        if (messageParent.length >= 10){
+            csvDataOutputMore('test_1.csv',messageParent.length)
+        }
+        
+     }
 }
 
-csvDataForHash('test_1.csv');//取得したCSVデータ
-// const resultArray = 
+function csvDataOutputMore(dataPath,textCount) {
+    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    var outputCsvTargetElements = document.getElementsByClassName('moreDisplayCsv')
+    var lastTargetNum = outputCsvTargetElements.length - 1
+    console.log(outputCsvTargetElements)
+    request.addEventListener('load', (event) => { // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        // output_svg.innerHTML = response; // 表示
+        var responseArray = convertCsvToArray(response);
+        var resultHtml = responseHtml(responseArray,textCount);
+        console.log(resultHtml);
+        outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
+        // console.log(responseHtml(responseArray));
+    });
+    request.open('GET', dataPath, true); // csvのパスを指定
+    request.send();
+}
+
+
+csvDataOutput('test_1.csv');//取得したCSVデータ
+
 </script>
