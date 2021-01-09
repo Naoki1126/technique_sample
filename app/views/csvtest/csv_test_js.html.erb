@@ -9,6 +9,38 @@ td {
   padding: .2em .5em;
   border: solid 1px #ccc;
 }
+
+.fukidashi{
+	position: absolute;
+	top: 61%;
+	left: 40%;
+	right: 2%;
+	width: 180px;
+	background: #FFF;
+	border: solid 1px #000;
+	border-radius: 23px;
+	font-size: calc(150px / 11);
+}
+.fukidashi:before {
+	content: "";
+	position: absolute;
+	top: 48px;
+	left: -39px;
+	margin-top: -28px;
+	border: 20px solid transparent;
+	border-right: 20px solid #FFF;
+	z-index: 2;;
+}
+.fukidashi:after {
+	content: "";
+	position: absolute;
+	top: 45px;
+	left: -40px;
+	margin-top: -25px;
+	border: 20px solid transparent;
+	border-right: 20px solid #000;
+	z-index: 1;
+}
 </style>
 
 <%= link_to 'rubyのcsv',csv_test_ruby_path %>
