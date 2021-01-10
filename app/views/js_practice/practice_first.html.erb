@@ -246,23 +246,44 @@ function responseHtml(csvArrayData,displayTextCount = 0){
     return insertElement;
 }
 
-window.onload = function(){
-    var morebutton = document.getElementById('morebutton');
-    var messageParent = document.getElementsByClassName('message_outline_parent');
-    morebutton.onclick = function(){
-        morebutton.remove();
-        if (messageParent.length >= 10){
-            csvDataOutputMore('test_1.csv',messageParent.length)
-        }
-        
-     }
+// window.onload = function(){
+//     var firstMoreButton = document.getElementById('morebutton');
+//     console.log(firstMoreButton);
+//     var messageParent;
+//     firstMoreButton.onclick = function(){
+//         messageParent = document.getElementsByClassName('message_outline_parent');
+//         var nextMoreButton = document.getElementById('morebutton');
+//         firstMoreButton.remove();
+//         firstMoreButton = nextMoreButton;
+//         if (messageParent.length >= 10){
+//             csvDataOutputMore('test_1.csv',messageParent.length)
+//          }
+//     }
+// }
+
+function loadFindMoreButton(){
+    window.onload = function(){
+        var firstMoreButton = document.getElementById('morebutton');
+        return firstMoreButton
+    }
 }
+
+// getElementButton().onclick = function(){
+//     var messageParent = document.getElementsByClassName('message_outline_parent');
+//     firstMoreButton.remove();
+//     var nextMoreButton = document.getElementById('morebutton');
+//     var firstMoreButton = nextMoreButton;
+//     if (messageParent.length >= 10){
+//         csvDataOutputMore('test_1.csv',messageParent.length)
+//     }
+// }
 
 function csvDataOutputMore(dataPath,textCount) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
     var outputCsvTargetElements = document.getElementsByClassName('moreDisplayCsv')
     var lastTargetNum = outputCsvTargetElements.length - 1
-    console.log(outputCsvTargetElements)
+    console.log(outputCsvTargetElements);
+    console.log(outputCsvTargetElements[lastTargetNum]);
     request.addEventListener('load', (event) => { // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
         // output_svg.innerHTML = response; // 表示
@@ -276,7 +297,23 @@ function csvDataOutputMore(dataPath,textCount) {
     request.send();
 }
 
-
 csvDataOutput('test_1.csv');//取得したCSVデータ
+
+var firstMoreButton = loadFindMoreButton();
+
+if (document.getElementById('morebutton') != null) {
+    var messageParent;
+    var nextMoreButton;
+    firstMoreButton = document.getElementById('morebutton');
+    firstMoreButton.onclick = function(){
+        messageParent = document.getElementsByClassName('message_outline_parent');
+        nextMoreButton = document.getElementById('morebutton');
+        firstMoreButton.remove();
+        firstMoreButton = nextMoreButton;
+        if (messageParent.length >= 10){
+            csvDataOutputMore('test_1.csv',messageParent.length)
+        }
+    }
+}
 
 </script>

@@ -10,6 +10,13 @@
   </head>
 
   <body style="width: 320px;">
+    <header>
+      <ul>
+        <li><%= link_to 'CSV連想配列出力(js)',js_practice_first_path %></li>
+        <li><%= link_to 'CSV出力(Ruby)', csv_test_ruby_path %></li>
+        <li><%= link_to 'CSV出力(js)', csv_test_js_path %></li>
+      </ul>
+    </header>
     <%= yield %>
   </body>
 
