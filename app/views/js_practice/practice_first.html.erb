@@ -233,10 +233,13 @@ function responseHtml(csvArrayData,displayTextCount = 0){
             insertElement += '</div>'
             insertElement += `<p class='output_text_relese_date'>${csvArrayData[i]['日付']}</p>`
             openTextCount++;
-             if (openTextCount % 10 === 0 ){
-            insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div><div class="moreDisplayCsv"></div>'
-            break;
-        }
+            if (openTextCount % 10 === 0 ){
+                insertElement += '<div class="moreDisplayCsv"></div>'
+                if (displayTextCount == 0){
+                    insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
+                }
+                break;
+            }
         }
     }
     // console.log(openTextCount);
@@ -246,27 +249,12 @@ function responseHtml(csvArrayData,displayTextCount = 0){
     return insertElement;
 }
 
-// window.onload = function(){
-//     var firstMoreButton = document.getElementById('morebutton');
-//     console.log(firstMoreButton);
-//     var messageParent;
-//     firstMoreButton.onclick = function(){
-//         messageParent = document.getElementsByClassName('message_outline_parent');
-//         var nextMoreButton = document.getElementById('morebutton');
-//         firstMoreButton.remove();
-//         firstMoreButton = nextMoreButton;
-//         if (messageParent.length >= 10){
-//             csvDataOutputMore('test_1.csv',messageParent.length)
-//          }
+// function loadFindMoreButton(){
+//     window.onload = function(){
+//         var firstMoreButton = document.getElementById('morebutton');
+//         return firstMoreButton
 //     }
 // }
-
-function loadFindMoreButton(){
-    window.onload = function(){
-        var firstMoreButton = document.getElementById('morebutton');
-        return firstMoreButton
-    }
-}
 
 // getElementButton().onclick = function(){
 //     var messageParent = document.getElementsByClassName('message_outline_parent');
@@ -297,23 +285,45 @@ function csvDataOutputMore(dataPath,textCount) {
     request.send();
 }
 
-csvDataOutput('test_1.csv');//取得したCSVデータ
+document.addEventListener('DOMContentLoaded', function(){
+    csvDataOutput('test_1.csv');//取得したCSVデータ
+},false);
 
-var firstMoreButton = loadFindMoreButton();
 
-if (document.getElementById('morebutton') != null) {
+
+window.onload = function(){
+    var firstMoreButton = document.getElementById('morebutton');
+    console.log(firstMoreButton);
     var messageParent;
-    var nextMoreButton;
-    firstMoreButton = document.getElementById('morebutton');
-    firstMoreButton.onclick = function(){
-        messageParent = document.getElementsByClassName('message_outline_parent');
-        nextMoreButton = document.getElementById('morebutton');
-        firstMoreButton.remove();
-        firstMoreButton = nextMoreButton;
-        if (messageParent.length >= 10){
-            csvDataOutputMore('test_1.csv',messageParent.length)
+    var clickCount = 0;
+    if (firstMoreButton != null ){
+        firstMoreButton.onclick = function(){
+            clickCount++;
+            console.log(clickCount);
+            var messageParent = document.getElementsByClassName('message_outline_parent');
+            if (messageParent.length >= 10){
+                csvDataOutputMore('test_1.csv',messageParent.length)
+            }
         }
     }
 }
+
+// var firstMoreButton = 
+
+// if (document.getElementById('morebutton') != null) {
+//     console.log('aaaaaaaaaa');
+//     var messageParent;
+//     var nextMoreButton;
+//     firstMoreButton = document.getElementById('morebutton');
+//     firstMoreButton.onclick = function(){
+//         messageParent = document.getElementsByClassName('message_outline_parent');
+//         nextMoreButton = document.getElementById('morebutton');
+//         firstMoreButton.remove();
+//         firstMoreButton = nextMoreButton;
+//         if (messageParent.length >= 10){
+//             csvDataOutputMore('test_1.csv',messageParent.length)
+//         }
+//     }
+// }
 
 </script>
