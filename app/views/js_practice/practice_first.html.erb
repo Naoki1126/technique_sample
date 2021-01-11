@@ -213,16 +213,16 @@ function responseHtml(csvArrayData,displayTextCount = 0){
     if (displayTextCount !== 0 ){
         openTextCount = displayTextCount;
     }
+    var testi = 0;
     console.log(displayTextCount);
     for (var i = 0; i < csvArrayData.length; i++){
+        if (displayTextCount >= 10 && i <= displayTextCount){
+            continue;
+        }
         openDate = new Date(csvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
         perseOpenDate = parseInt(csvArrayData[i]['Id']); //csvファイルのIDをintに変換
         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
         if (changeFormatOpenDate === changeFormatToday || parseInt(csvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
-            if (displayTextCount >= 10 && i <= displayTextCount){
-                continue;
-
-            }
             insertElement += '<div class="message_outline_parent">'
             insertElement += '<div class="message_icon"></div>'
             insertElement += '<div class="fukidashi" style="color:blue">'
@@ -241,7 +241,9 @@ function responseHtml(csvArrayData,displayTextCount = 0){
                 break;
             }
         }
+        testi++;
     }
+    console.log(testi);
     // console.log(openTextCount);
     // console.log(csvArrayData[3]["日付"].length);
     // console.log(typeof(csvArrayData[2]['Id']));
@@ -294,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function(){
 window.onload = function(){
     var firstMoreButton = document.getElementById('morebutton');
     console.log(firstMoreButton);
-    var messageParent;
     var clickCount = 0;
     if (firstMoreButton != null ){
         firstMoreButton.onclick = function(){

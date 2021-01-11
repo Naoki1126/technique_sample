@@ -10,6 +10,6 @@ class CsvtestController < ApplicationController
             @csvtext << row
         end
         @text = CSV.read('public/test_1.csv')
-        
     end
+
 end
