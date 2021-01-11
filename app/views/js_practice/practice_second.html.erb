@@ -68,21 +68,23 @@
 const outputTargetElement = document.getElementById('output_for_hash');
 var displayElementLastId;
 var displayTextCount;
+var text;
 function csvDataOutput(dataPath) {
-    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    request.addEventListener('load', (event) => { // ロードさせ実行
-        const response = event.target.responseText; // 受け取ったテキストを返す
-        // output_svg.innerHTML = response; // 表示
-        var responseArray = convertCsvToArray(response);
-        var [resultHtml,textCount,elementLastId] = responseHtml(responseArray);
-        displayElementLastId = elementLastId;
-        console.log(displayElementLastId);
-        displayTextCount = textCount;
-        outputTargetElement.innerHTML = resultHtml;
-        // console.log(responseHtml(responseArray));
-    });
-    request.open('GET', dataPath, true); // csvのパスを指定
-    request.send();
+        const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+        request.addEventListener('load', (event) => { // ロードさせ実行
+            const response = event.target.responseText; // 受け取ったテキストを返す
+            // output_svg.innerHTML = response; // 表示
+            var responseArray = convertCsvToArray(response);
+            var [resultHtml,textCount,elementLastId] = responseHtml(responseArray);
+            displayElementLastId = elementLastId;
+            console.log(displayElementLastId);
+            displayTextCount = textCount;
+            outputTargetElement.innerHTML = resultHtml;
+            // console.log(responseHtml(responseArray));
+        });
+        console.log(text);
+        request.open('GET', dataPath, true); // csvのパスを指定
+        request.send();
 }
 
 function convertCsvToArray(csv) { // [ {}{}{}]型に変換して返す
@@ -149,7 +151,7 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
             if (openTextCount % 10 === 0 ){
                 insertElement += '<div class="moreDisplayCsv"></div>'
                 if (displayTextCount == 0){
-                    insertElement += '<div id="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
+                    insertElement += '<div id="morebutton_parent"><button id="morebutton" onclick="clickEvent();">もっと見る</button></div>'
                 }
                 break;
             }
@@ -157,6 +159,9 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
     }
     return [insertElement,openTextCount,displayElementLastId];
 }
+
+csvDataOutput('test_1.csv');//取得したCSVデータ
+
 
 
 function csvDataOutputMore(dataPath,textCount,displayElementLastId) {
@@ -177,25 +182,19 @@ function csvDataOutputMore(dataPath,textCount,displayElementLastId) {
     request.send();
 }
 
-csvDataOutput('test_1.csv');//取得したCSVデータ
 
-
-window.addEventListener('load',() => {
-        var firstMoreButton = document.getElementById('morebutton_parent');
-        console.log(firstMoreButton);
-        if (firstMoreButton == null){
-            firstMoreButton = document.getElementById('morebutton_parent');
-        }
-        var clickCount = 0;
-        if (firstMoreButton != null ){
-            document.getElementById('morebutton_parent').onclick = function(){
-                clickCount++;
-                var messageParent = document.getElementsByClassName('message_outline_parent');
-                if (messageParent.length >= 10){
-                    csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
-                }
+function clickEvent(){
+    var firstMoreButton = document.getElementById('morebutton_parent');
+    console.log(firstMoreButton);
+    var clickCount = 0;
+    if (firstMoreButton != null ){
+        document.getElementById('morebutton_parent').onclick = function(){
+            clickCount++;
+            var messageParent = document.getElementsByClassName('message_outline_parent');
+            if (messageParent.length >= 10){
+                csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
             }
         }
-});
-
+    }
+}
 </script>
