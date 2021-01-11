@@ -52,7 +52,7 @@
     background: white;
     text-align: center;
 }
-.morebutton_parent{
+#morebutton_parent{
     width:50%;
     margin: 0 auto;
 }
@@ -62,6 +62,7 @@
 <p>メッセージ風</p>
 
 <div id = 'output_for_hash'></div>
+<div id = 'sub_btn'>
 <script>
 
 const outputTargetElement = document.getElementById('output_for_hash');
@@ -69,7 +70,7 @@ var displayElementLastId;
 var displayTextCount;
 function csvDataOutput(dataPath) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    request.addEventListener('load', (event) => { // ロードさせ実行
+    request.addEventListener('DOMContentLoaded', (event) => { // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
         // output_svg.innerHTML = response; // 表示
         var responseArray = convertCsvToArray(response);
@@ -148,7 +149,7 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
             if (openTextCount % 10 === 0 ){
                 insertElement += '<div class="moreDisplayCsv"></div>'
                 if (displayTextCount == 0){
-                    insertElement += '<div class="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
+                    insertElement += '<div id="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
                 }
                 break;
             }
@@ -176,25 +177,25 @@ function csvDataOutputMore(dataPath,textCount,displayElementLastId) {
     request.send();
 }
 
-document.addEventListener('DOMContentLoaded', function(){
-    csvDataOutput('test_1.csv');//取得したCSVデータ
-},false);
+csvDataOutput('test_1.csv');//取得したCSVデータ
 
 
-
-window.onload = function(){
-    var firstMoreButton = document.getElementById('morebutton');
-    console.log(firstMoreButton);
-    var clickCount = 0;
-    if (firstMoreButton != null ){
-        firstMoreButton.onclick = function(){
-            clickCount++;
-            var messageParent = document.getElementsByClassName('message_outline_parent');
-            if (messageParent.length >= 10){
-                csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
+window.addEventListener('load',() => {
+        var firstMoreButton = document.getElementById('morebutton_parent');
+        console.log(firstMoreButton);
+        if (firstMoreButton == null){
+            firstMoreButton = document.getElementById('morebutton_parent');
+        }
+        var clickCount = 0;
+        if (firstMoreButton != null ){
+            document.getElementById('morebutton_parent').onclick = function(){
+                clickCount++;
+                var messageParent = document.getElementsByClassName('message_outline_parent');
+                if (messageParent.length >= 10){
+                    csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
+                }
             }
         }
-    }
-}
+});
 
 </script>
