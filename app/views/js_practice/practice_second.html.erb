@@ -70,7 +70,7 @@ var displayElementLastId;
 var displayTextCount;
 function csvDataOutput(dataPath) {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    request.addEventListener('DOMContentLoaded', (event) => { // ロードさせ実行
+    request.addEventListener('load', (event) => { // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
         // output_svg.innerHTML = response; // 表示
         var responseArray = convertCsvToArray(response);
