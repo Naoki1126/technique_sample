@@ -70,21 +70,23 @@
 
 <div id = 'output_for_hash'></div>
 <div id = 'sub_btn'>
+
+
 <script>
 
 const outputTargetElement = document.getElementById('output_for_hash');
 var displayElementLastId;
 var displayTextCount;
-var text;
-function csvDataOutput(dataPath) {
+var csvResultArrayDatas;
+function csvDataOutput( dataPath ) {
         const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
         request.addEventListener('load', (event) => { // ロードさせ実行
             const response = event.target.responseText; // 受け取ったテキストを返す
             // output_svg.innerHTML = response; // 表示
             var responseArray = convertCsvToArray(response);
+            csvResultArrayDatas = responseArray;
             var [resultHtml,textCount,elementLastId] = responseHtml(responseArray);
             displayElementLastId = elementLastId;
-            console.log(displayElementLastId);
             displayTextCount = textCount;
             outputTargetElement.innerHTML = resultHtml;
             // console.log(responseHtml(responseArray));
@@ -130,12 +132,11 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
     var sinceRegistration = `<%= @since_registration %>` //登録日よりの経過日数をRubyより渡す
     var openTextCount = 0;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
     var insertElement = '' //innerHTMLに渡すための変数、ここにHTML要素を全て入れ込む
-    // if (displayTextCount !== 0 ){
-    //     openTextCount = displayTextCount;
-    // }
+    if (displayTextCount !== 0 ){
+        openTextCount = displayTextCount;
+    }
 
     var reverseCsvArrayData = csvArrayData.reverse();
-
     for (var i = 0; i < csvArrayData.length; i++){
         if (displayTextLastId != 0 && parseInt(reverseCsvArrayData[i]["Id"]) >= parseInt(displayTextLastId)){
            continue;
@@ -157,7 +158,7 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
             openTextCount++;
             displayElementLastId = reverseCsvArrayData[i]['Id']
 
-            if (openTextCount % 10 === 0 ){
+            if (openTextCount % 10 === 0){
                 insertElement += '<div class="moreDisplayCsv"></div>'
 
                 if (displayTextCount == 0 ){
@@ -176,35 +177,54 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
 csvDataOutput('test_1.csv');//取得したCSVデータ
 
 
-
-function csvDataOutputMore(dataPath,textCount,displayElementLastId) {
-    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    var outputCsvTargetElements = document.getElementsByClassName('moreDisplayCsv')
-    var lastTargetNum = outputCsvTargetElements.length - 1
-    console.log(displayElementLastId);
-    request.addEventListener('load', (event) => { // ロードさせ実行
-        const response = event.target.responseText; // 受け取ったテキストを返す
-        // output_svg.innerHTML = response; // 表示
-        var responseArray = convertCsvToArray(response);
-        var [resultHtml,displayTextCount,lastElementId] = responseHtml(responseArray,textCount,displayElementLastId);
-        displayElementLastId = lastElementId;
-        outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
-        // console.log(responseHtml(responseArray));
-    });
-    request.open('GET', dataPath, true); // csvのパスを指定
-    request.send();
-}
-
-
 function clickEvent(){
     var moreViewButton = document.getElementById('morebutton_parent');
+    console.log(displayElementLastId);
+    console.log(csvResultArrayDatas);
     if (moreViewButton != null ){
         moreViewButton.onclick = function(){
             var messageParent = document.getElementsByClassName('message_outline_parent');
+            console.log(messageParent);
             if (messageParent.length >= 10){
-                csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
+                var outputCsvTargetElements = document.getElementsByClassName('moreDisplayCsv')
+                var lastTargetNum = outputCsvTargetElements.length - 1
+                var reverseCsvResultArrayDatas = csvResultArrayDatas.reverse();
+                var [resultHtml,displayTextCount,lastElementId] = responseHtml(reverseCsvResultArrayDatas,messageParent.length,displayElementLastId);
+                displayElementLastId = lastElementId;
+                outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
             }
         }
     }
 }
-</script>
+
+
+
+function sessionRequest(dataPath) {
+    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    request.addEventListener('load', (event) => { // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        // output_svg.innerHTML = response; // 表示
+        console.log(event);
+
+        console.log(response);
+    });
+    request.open('GET', dataPath); // csvのパスを指定
+    request.send();
+}
+
+
+sessionRequest('http://localhost:3000/session/read?session=1')
+
+// function clickEvent(){
+//     var moreViewButton = document.getElementById('morebutton_parent');
+//     if (moreViewButton != null ){
+//         moreViewButton.onclick = function(){
+//             var messageParent = document.getElementsByClassName('message_outline_parent');
+//             if (messageParent.length >= 10){
+//                 csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
+//             }
+//         }
+//     }
+// </script>
+
+
