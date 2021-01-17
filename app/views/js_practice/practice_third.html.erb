@@ -89,6 +89,7 @@ function csvDataOutput( dataPath ) {
             displayElementLastId = elementLastId;
             displayTextCount = textCount;
             outputTargetElement.innerHTML = resultHtml;
+            sessionRequest();
             // console.log(responseHtml(responseArray));
         });
         request.open('GET', dataPath, true); // csvのパスを指定
@@ -179,12 +180,9 @@ csvDataOutput('test_1.csv');//取得したCSVデータ
 
 function clickEvent(){
     var moreViewButton = document.getElementById('morebutton_parent');
-    console.log(displayElementLastId);
-    console.log(csvResultArrayDatas);
     if (moreViewButton != null ){
         moreViewButton.onclick = function(){
             var messageParent = document.getElementsByClassName('message_outline_parent');
-            console.log(messageParent);
             if (messageParent.length >= 10){
                 var outputCsvTargetElements = document.getElementsByClassName('moreDisplayCsv')
                 var lastTargetNum = outputCsvTargetElements.length - 1
@@ -192,6 +190,7 @@ function clickEvent(){
                 var [resultHtml,displayTextCount,lastElementId] = responseHtml(reverseCsvResultArrayDatas,messageParent.length,displayElementLastId);
                 displayElementLastId = lastElementId;
                 outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
+                sessionRequest();
             }
         }
     }
@@ -200,15 +199,12 @@ function clickEvent(){
 
 
 function sessionRequest() {
-    const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    request.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
-    request.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
-    request.send( 'message_count=3' );
+    const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
+    var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
+    req.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
+    req.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
+    req.send(`message_count=${openDisplayMessageCount}` );
 }
-
-
-sessionRequest();
-
 // function clickEvent(){
 //     var moreViewButton = document.getElementById('morebutton_parent');
 //     if (moreViewButton != null ){
@@ -217,8 +213,8 @@ sessionRequest();
 //             if (messageParent.length >= 10){
 //                 csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
 //             }
-//         }
-//     }
+//      }
+//   }
 // </script>
 
 
