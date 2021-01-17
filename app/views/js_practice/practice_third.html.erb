@@ -65,6 +65,7 @@
 }
 </style>
 <% @since_registration = 5 %>
+<% @already_save_message_count = session[:message_count] %>
 <h2>csvファイルの連想配列出力</h2>
 <p>メッセージ風</p>
 
@@ -78,6 +79,8 @@ const outputTargetElement = document.getElementById('output_for_hash');
 var displayElementLastId;
 var displayTextCount;
 var csvResultArrayDatas;
+var alreadySessionSaveMessageCount = `<%= @already_save_message_count %>`
+console.log(alreadySessionSaveMessageCount);
 function csvDataOutput( dataPath ) {
         const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
         request.addEventListener('load', (event) => { // ロードさせ実行
@@ -203,11 +206,18 @@ function clickEvent(){
 
 
 function sessionPostRequest() {
-    const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
-    req.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
-    req.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
-    req.send(`message_count=${openDisplayMessageCount}` );
+        const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
+        var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
+        console.log(openDisplayMessageCount);
+        console.log();
+        if (alreadySessionSaveMessageCount == ''){
+            alreadySessionSaveMessageCount = 0
+        }
+        if (parseInt(alreadySessionSaveMessageCount) < openDisplayMessageCount ){
+        req.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
+        req.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
+        req.send(`message_count=${openDisplayMessageCount}` );
+    }
 }
 // function clickEvent(){
 //     var moreViewButton = document.getElementById('morebutton_parent');

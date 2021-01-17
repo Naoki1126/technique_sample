@@ -3,7 +3,6 @@ class SessionController < ApplicationController
     def read
         if session[:message_count]
             @test = session[:message_count]
-            raise
         end
     end
 
@@ -14,6 +13,9 @@ class SessionController < ApplicationController
     end
 
     def destroy
-
+       if session[:message_count]
+        session[:message_count].clear
+       end
+        redirect_to csv_test_js_path
     end
 end

@@ -20,6 +20,7 @@
       </div>
       <p id = 'csv_message_notification'></p>
       <p id = "csv_message_unread_count"></p>
+      <p><%=link_to 'sessionリセット', session_delete_path,method: :post %>
     </header>
 
     <%= yield %>
