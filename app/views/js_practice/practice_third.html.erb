@@ -199,21 +199,15 @@ function clickEvent(){
 
 
 
-function sessionRequest(dataPath) {
+function sessionRequest() {
     const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
-    request.addEventListener('load', (event) => { // ロードさせ実行
-        const response = event.target.responseText; // 受け取ったテキストを返す
-        // output_svg.innerHTML = response; // 表示
-        console.log(event);
-
-        console.log(response);
-    });
-    request.open('GET', dataPath); // csvのパスを指定
-    request.send();
+    request.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
+    request.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
+    request.send( 'message_count=3' );
 }
 
 
-sessionRequest('http://localhost:3000/session/read?session=1')
+sessionRequest();
 
 // function clickEvent(){
 //     var moreViewButton = document.getElementById('morebutton_parent');

@@ -1,12 +1,13 @@
 class SessionController < ApplicationController
 
     def read
-        if params[:sassion]
-            session[:user] = params[:session]
-        end
     end
 
     def sava
+        if params[:message_count]
+            session[:message_count] = params[:message_count]
+            current_user.assign_attributes(session[:message_count])
+        end
     end
 
     def destroy
