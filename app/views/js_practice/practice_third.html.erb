@@ -89,7 +89,7 @@ function csvDataOutput( dataPath ) {
             displayElementLastId = elementLastId;
             displayTextCount = textCount;
             outputTargetElement.innerHTML = resultHtml;
-            sessionRequest();
+            sessionPostRequest();
             // console.log(responseHtml(responseArray));
         });
         request.open('GET', dataPath, true); // csvのパスを指定
@@ -98,13 +98,16 @@ function csvDataOutput( dataPath ) {
 
 function convertCsvToArray(csv) { // [ {}{}{}]型に変換して返す
     //header:CSV1行目の項目 :csvRows:項目に対する値
-    const [header, ...csvRows] = csv.split('\n').filter(function (row) {
+    const [header, ...csvRows] = csv.split('\n').filter(function (row) { //filter: 新しく配列を作る
         if (row !== '') {
+            
         return row;
         }
     }).map(function (row) {
         return row.split(',');
     });
+    console.log(header);
+    console.log(csvRows);
 
     var arrayInKeyAndValue;
     var resultArray;
@@ -115,6 +118,7 @@ function convertCsvToArray(csv) { // [ {}{}{}]型に変換して返す
         //ヘッダーの空白文字を削除。　keyとvalueに値をセット
         return ({ key: header[index].replace(/\s+/g, ''), value: r[index] });
         });
+        // console.log(arrayInkeyAndValue);
         arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
         //{key: "物", value: "MacBook", メーカー: "apple", 値段: "3000"}を作成
         previous[current.key] = current.value;
@@ -190,7 +194,7 @@ function clickEvent(){
                 var [resultHtml,displayTextCount,lastElementId] = responseHtml(reverseCsvResultArrayDatas,messageParent.length,displayElementLastId);
                 displayElementLastId = lastElementId;
                 outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
-                sessionRequest();
+                sessionPostRequest();
             }
         }
     }
@@ -198,7 +202,7 @@ function clickEvent(){
 
 
 
-function sessionRequest() {
+function sessionPostRequest() {
     const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
     var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
     req.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定

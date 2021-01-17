@@ -18,9 +18,106 @@
         <li><%= link_to 'CSV連想配列出力(js)2', js_practice_second_path %></li>
         <li><%= link_to 'CSV通知出力(js)3', js_practice_third_path %></li>
       </div>
+      <p id = 'csv_message_notification'></p>
+      <p id = "csv_message_unread_count"></p>
     </header>
 
     <%= yield %>
+    <% if user_signed_in?  && action_name != 'practice_third' %>
+      <% @since_registration = 5 %>
+      <% @session_count = session[:message_count] %>
+      <% @change_int_session_count = @session_count.to_i %>
+      <script>
+      var alreadySessionSaveMessageCount = `<%=  @change_int_session_count %>` //登録日よりの経過日数をRubyより渡す
+      console.log(alreadySessionSaveMessageCount);
+        function csvReturnsInformaitions( dataPath ) {
+                const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
+                request.addEventListener('load', (event) => { // ロードさせ実行
+                    const response = event.target.responseText; // 受け取ったテキストを返す
+                    // output_svg.innerHTML = response; // 表示
+                    var responseArray = convertCsvToArray(response);
+                    var [openTextCount,displayElementLastId] = responseNotificationCount(responseArray);
+                    console.log(openTextCount);
+                    console.log(displayElementLastId);
+                    if (parseInt(alreadySessionSaveMessageCount) < openTextCount){
+                      var changeElementForNotice = document.getElementById('csv_message_notification')
+                      var changeElementForMessageCount = document.getElementById('csv_message_unread_count')
+                      var unreadMessageCount = openTextCount - alreadySessionSaveMessageCount
+                      // console.log()
+                      changeElementForNotice.innerHTML = '<span>通知あり</span>'
+                      changeElementForMessageCount.innerHTML = `<p>未読通知<span style="color:red">${unreadMessageCount}件</p>`
+                    }
+                    // chageElementForNotice.innerHTML = resultHtml;
+                    // console.log(responseHtml(responseArray));
+                });
+                request.open('GET', dataPath, true); // csvのパスを指定
+                request.send();
+        }
+
+        function convertCsvToArray(csv) { // [ {}{}{}]型に変換して返す
+            //header:CSV1行目の項目 :csvRows:項目に対する値
+            const [header, ...csvRows] = csv.split('\n').filter(function (row) {
+                if (row !== '') {
+                return row;
+                }
+            }).map(function (row) {
+                return row.split(',');
+            });
+
+            var arrayInKeyAndValue;
+            var resultArray;
+            var tmpResultArray;
+
+            tmpResultArray = csvRows.map(function (r) {
+                arrayInKeyAndValue = header.map(function (_, index) {
+                //ヘッダーの空白文字を削除。　keyとvalueに値をセット
+                return ({ key: header[index].replace(/\s+/g, ''), value: r[index] });
+                });
+                arrayInKeyAndValue = arrayInKeyAndValue.reduce(function (previous, current) {
+                //{key: "物", value: "MacBook", メーカー: "apple", 値段: "3000"}を作成
+                previous[current.key] = current.value;
+                return previous;
+                }, {});
+                return arrayInKeyAndValue;
+            });
+            return tmpResultArray
+        }
+
+        function responseNotificationCount(csvArrayData){
+            var today = new Date();
+            var changeFormatToday = (today.getFullYear() + '/' + Number(today.getMonth()+1) + '/' + Number(today.getDate()));
+            var openDate;// 連想配列内の日付を代入するための変数を用意
+            var changeFormatOpenDate; //連想配列内の日付の形式を変換するための変数を定義
+            var sinceRegistration = `<%=  @since_registration %>` //登録日よりの経過日数をRubyより渡す
+            // var alreadySessionSaveMessageCount = `<%=  @change_int_session_count %>` //登録日よりの経過日数をRubyより渡す
+            var openMessageCount = 0;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
+            var reverseCsvArrayData = csvArrayData.reverse();
+            var displayElementLastId;
+            for (var i = 0; i < csvArrayData.length; i++){
+                openDate = new Date(reverseCsvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
+                perseOpenDate = parseInt(reverseCsvArrayData[i]['Id']); //csvファイルのIDをintに変換
+                changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
+                if (changeFormatOpenDate === changeFormatToday || parseInt(reverseCsvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+                    openMessageCount++;
+                    displayElementLastId = reverseCsvArrayData[i]['Id']
+                }
+
+            }
+            return [openMessageCount,displayElementLastId];
+        }
+
+        csvReturnsInformaitions('/test_1.csv');//取得したCSVデータ
+
+        // function sessionPostRequest() {
+        //     const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
+        //     var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
+        //     req.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
+        //     req.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
+        //     req.send(`message_count=${openDisplayMessageCount}` );
+        // }
+
+      </script>
+    <% end %>
   </body>
 
 <script type="text/javascript">
