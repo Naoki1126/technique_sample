@@ -86,8 +86,7 @@ function csvDataOutput( dataPath ) {
             const response = event.target.responseText; // 受け取ったテキストを返す
             var responseArray = convertCsvToArray(response);
             csvResultArrayDatas = responseArray;
-            var [resultHtml,textCount,elementLastId] = responseHtml(responseArray);
-            displayElementLastId = elementLastId;
+            var [resultHtml,textCount] = responseHtml(responseArray);
             displayTextCount = textCount;
             outputTargetElement.innerHTML = resultHtml;
             // sessionPostRequest();
@@ -128,7 +127,7 @@ function convertCsvToArray(csv) { // [ {}{}{}]型に変換して返す
     return tmpResultArray
 }
 
-function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
+function responseHtml(csvArrayData,displayTextCount = 0){
     var today = new Date();
     var changeFormatToday = (today.getFullYear() + '/' + Number(today.getMonth()+1) + '/' + Number(today.getDate()));
     var openDate;// 連想配列内の日付を代入するための変数を用意
@@ -143,15 +142,12 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
     var reverseCsvArrayData = csvArrayData.reverse();
 
     for (var i = 0; i < csvArrayData.length; i++){
-        // if (displayTextLastId != 0 && parseInt(reverseCsvArrayData[i]["Id"]) >= parseInt(displayTextLastId)){
-        //    continue;
-        // }
-
         openDate = new Date(reverseCsvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
         perseOpenDate = parseInt(reverseCsvArrayData[i]['Id']); //csvファイルのIDをintに変換
         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
         forCount++;
         if (changeFormatOpenDate == changeFormatToday || parseInt(reverseCsvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+            absoluteOpenMessageCount++;
             if ( forCount <= openTextCount){
                 continue;
             }
@@ -179,7 +175,7 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
            document.getElementById('morebutton').remove();
         }
     }
-    return [insertElement,openTextCount,displayElementLastId];
+    return [insertElement,openTextCount,absoluteOpenMessageCount];
 }
 
 csvDataOutput('test_1.csv');//取得したCSVデータ
@@ -194,17 +190,9 @@ function clickEvent(){
                 var outputCsvTargetElements = document.getElementsByClassName('moreDisplayCsv')
                 var lastTargetNum = outputCsvTargetElements.length - 1
                 var reverseCsvResultArrayDatas = csvResultArrayDatas.reverse();
-                var [resultHtml,displayTextCount,lastElementId] = responseHtml(reverseCsvResultArrayDatas,messageParent.length,displayElementLastId);
-                displayElementLastId = lastElementId;
+                var [resultHtml,displayTextCount] = responseHtml(reverseCsvResultArrayDatas,messageParent.length);
                 outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
                 saveForLocalStrage('messageCount',displayTextCount);
-                console.log(displayTextCount);
-                console.log(parseInt(localStorage.getItem('messageCount')))
-                if (displayTextCount > parseInt(localStorage.getItem('messageCount'))){
-                    console.log('test');
-                    var unreadMessageCount = displayTextCount - localStorage.getItem('messageCount');
-                    changeElementForMessageCount(unreadMessageCount)
-                }
             }
         }
     }
@@ -215,13 +203,6 @@ function saveForLocalStrage(key,val){
     localStorage[key] = val
     }
 
-}
-
-function changeElementForMessageCount(unreadMessageCount){
-    var changeElementForNotice = document.getElementById('csv_message_notification')
-    var changeElementForMessageCount = document.getElementById('csv_message_unread_count')
-    changeElementForNotice.innerHTML = '<span>通知あり</span>'
-    changeElementForMessageCount.innerHTML = `<p>未読通知<span style="color:red">${unreadMessageCount}件</p>`
 }
 
 
