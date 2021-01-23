@@ -65,7 +65,6 @@
 }
 </style>
 <% @since_registration = 5 %>
-<% @already_save_message_count = session[:message_count] %>
 <h2>csvファイルの連想配列出力</h2>
 <p>メッセージ風</p>
 
@@ -76,24 +75,24 @@
 <script>
 
 const outputTargetElement = document.getElementById('output_for_hash');
-var displayElementLastId;
-var displayTextCount;
-var csvResultArrayDatas;
-var alreadySessionSaveMessageCount = `<%= @already_save_message_count %>`
-console.log(alreadySessionSaveMessageCount);
+var displayElementLastId; //表示されているCSVデータの最終表示ID
+var displayTextCount; //表示されているテキストの数
+var openMessageAbsoluteCount; //表示できるであろうメッセージの絶対数
+var csvResultArrayDatas; //一度ロードしたCSVの連想配列データを入れ込むための変数
+
 function csvDataOutput( dataPath ) {
         const request = new XMLHttpRequest(); // HTTPでファイルを読み込む
         request.addEventListener('load', (event) => { // ロードさせ実行
             const response = event.target.responseText; // 受け取ったテキストを返す
-            // output_svg.innerHTML = response; // 表示
             var responseArray = convertCsvToArray(response);
             csvResultArrayDatas = responseArray;
             var [resultHtml,textCount,elementLastId] = responseHtml(responseArray);
             displayElementLastId = elementLastId;
             displayTextCount = textCount;
             outputTargetElement.innerHTML = resultHtml;
-            sessionPostRequest();
-            // console.log(responseHtml(responseArray));
+            // sessionPostRequest();
+            saveForLocalStrage('messageCount',displayTextCount);
+            clickEvent();
         });
         request.open('GET', dataPath, true); // csvのパスを指定
         request.send();
@@ -103,14 +102,11 @@ function convertCsvToArray(csv) { // [ {}{}{}]型に変換して返す
     //header:CSV1行目の項目 :csvRows:項目に対する値
     const [header, ...csvRows] = csv.split('\n').filter(function (row) { //filter: 新しく配列を作る
         if (row !== '') {
-            
         return row;
         }
     }).map(function (row) {
         return row.split(',');
     });
-    console.log(header);
-    console.log(csvRows);
 
     var arrayInKeyAndValue;
     var resultArray;
@@ -138,22 +134,27 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
     var openDate;// 連想配列内の日付を代入するための変数を用意
     var changeFormatOpenDate; //連想配列内の日付の形式を変換するための変数を定義
     var sinceRegistration = `<%= @since_registration %>` //登録日よりの経過日数をRubyより渡す
-    var openTextCount = 0;// Sessionに保存するために、どこまで開いたのかを判別する変数を定義
+    var openTextCount = 0;// どこまで開いたのかを判別する変数を定義
     var insertElement = '' //innerHTMLに渡すための変数、ここにHTML要素を全て入れ込む
     if (displayTextCount !== 0 ){
         openTextCount = displayTextCount;
     }
-
+    var forCount = 0;
     var reverseCsvArrayData = csvArrayData.reverse();
+
     for (var i = 0; i < csvArrayData.length; i++){
-        if (displayTextLastId != 0 && parseInt(reverseCsvArrayData[i]["Id"]) >= parseInt(displayTextLastId)){
-           continue;
-        }
+        // if (displayTextLastId != 0 && parseInt(reverseCsvArrayData[i]["Id"]) >= parseInt(displayTextLastId)){
+        //    continue;
+        // }
 
         openDate = new Date(reverseCsvArrayData[i]['日付']); //csvファイルの日付指定メニューの値を日時に変換
         perseOpenDate = parseInt(reverseCsvArrayData[i]['Id']); //csvファイルのIDをintに変換
         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
-        if (changeFormatOpenDate === changeFormatToday || parseInt(reverseCsvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+        forCount++;
+        if (changeFormatOpenDate == changeFormatToday || parseInt(reverseCsvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
+            if ( forCount <= openTextCount){
+                continue;
+            }
             insertElement += '<div class="message_outline_parent">'
             insertElement += '<div class="message_icon"></div>'
             insertElement += '<div class="fukidashi" style="color:blue">'
@@ -170,11 +171,10 @@ function responseHtml(csvArrayData,displayTextCount = 0,displayTextLastId = 0){
                 insertElement += '<div class="moreDisplayCsv"></div>'
 
                 if (displayTextCount == 0 ){
-                    insertElement += '<div id="morebutton_parent"><button id="morebutton" onclick="clickEvent();">もっと見る</button></div>'
+                    insertElement += '<div id="morebutton_parent"><button id="morebutton">もっと見る</button></div>'
                 }
                 break;
             }
-
         }else if (document.getElementById('morebutton') !== null){
            document.getElementById('morebutton').remove();
         }
@@ -197,38 +197,35 @@ function clickEvent(){
                 var [resultHtml,displayTextCount,lastElementId] = responseHtml(reverseCsvResultArrayDatas,messageParent.length,displayElementLastId);
                 displayElementLastId = lastElementId;
                 outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
-                sessionPostRequest();
+                saveForLocalStrage('messageCount',displayTextCount);
+                console.log(displayTextCount);
+                console.log(parseInt(localStorage.getItem('messageCount')))
+                if (displayTextCount > parseInt(localStorage.getItem('messageCount'))){
+                    console.log('test');
+                    var unreadMessageCount = displayTextCount - localStorage.getItem('messageCount');
+                    changeElementForMessageCount(unreadMessageCount)
+                }
             }
         }
     }
 }
 
-
-
-function sessionPostRequest() {
-        const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
-        var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
-        console.log(openDisplayMessageCount);
-        console.log();
-        if (alreadySessionSaveMessageCount == ''){
-            alreadySessionSaveMessageCount = 0
-        }
-        if (parseInt(alreadySessionSaveMessageCount) < openDisplayMessageCount ){
-        req.open('POST', 'http://localhost:3000/session/save'); // csvのパスを指定
-        req.setRequestHeader('content-type','application/x-www-form-urlencoded;charset=UTF-8');
-        req.send(`message_count=${openDisplayMessageCount}` );
+function saveForLocalStrage(key,val){
+    if (localStorage.getItem(key) < val){
+    localStorage[key] = val
     }
+
 }
-// function clickEvent(){
-//     var moreViewButton = document.getElementById('morebutton_parent');
-//     if (moreViewButton != null ){
-//         moreViewButton.onclick = function(){
-//             var messageParent = document.getElementsByClassName('message_outline_parent');
-//             if (messageParent.length >= 10){
-//                 csvDataOutputMore('test_1.csv',messageParent.length,displayElementLastId)
-//             }
-//      }
-//   }
+
+function changeElementForMessageCount(unreadMessageCount){
+    var changeElementForNotice = document.getElementById('csv_message_notification')
+    var changeElementForMessageCount = document.getElementById('csv_message_unread_count')
+    changeElementForNotice.innerHTML = '<span>通知あり</span>'
+    changeElementForMessageCount.innerHTML = `<p>未読通知<span style="color:red">${unreadMessageCount}件</p>`
+}
+
+
+
 // </script>
 
 

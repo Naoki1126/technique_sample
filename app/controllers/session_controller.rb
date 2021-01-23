@@ -16,6 +16,7 @@ class SessionController < ApplicationController
        if session[:message_count]
         session[:message_count].clear
        end
-        redirect_to csv_test_js_path
+        path = request.referer
+        redirect_to path
     end
 end
