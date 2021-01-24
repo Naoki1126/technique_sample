@@ -90,8 +90,9 @@ function csvDataOutput( dataPath ) {
             displayTextCount = textCount;
             outputTargetElement.innerHTML = resultHtml;
             // sessionPostRequest();
-            saveForLocalStrage('messageCount',displayTextCount);
+            saveForLocalStrage('openMessageCount',displayTextCount);
             clickEvent();
+            // changeHtmlNotifications();
         });
         request.open('GET', dataPath, true); // csvのパスを指定
         request.send();
@@ -147,7 +148,6 @@ function responseHtml(csvArrayData,displayTextCount = 0){
         changeFormatOpenDate =  (openDate.getFullYear() + '/' + Number(openDate.getMonth()+1) + '/' + Number(openDate.getDate())); //日付で整合をとるため、CSVファイル内の日付フォーマットを変換する
         forCount++;
         if (changeFormatOpenDate == changeFormatToday || parseInt(reverseCsvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
-            absoluteOpenMessageCount++;
             if ( forCount <= openTextCount){
                 continue;
             }
@@ -175,7 +175,7 @@ function responseHtml(csvArrayData,displayTextCount = 0){
            document.getElementById('morebutton').remove();
         }
     }
-    return [insertElement,openTextCount,absoluteOpenMessageCount];
+    return [insertElement,openTextCount];
 }
 
 csvDataOutput('test_1.csv');//取得したCSVデータ
@@ -192,7 +192,8 @@ function clickEvent(){
                 var reverseCsvResultArrayDatas = csvResultArrayDatas.reverse();
                 var [resultHtml,displayTextCount] = responseHtml(reverseCsvResultArrayDatas,messageParent.length);
                 outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
-                saveForLocalStrage('messageCount',displayTextCount);
+                saveForLocalStrage('openMessageCount',displayTextCount);
+                changeHtmlNotifications();
             }
         }
     }
@@ -202,7 +203,16 @@ function saveForLocalStrage(key,val){
     if (localStorage.getItem(key) < val){
     localStorage[key] = val
     }
+}
 
+function changeHtmlNotifications(){
+    var absoluteOpenMessageCount = parseInt(localStorage.getItem("absoluteOpenMessageCount"));
+    var saveOpenMessageCount = parseInt(localStorage.getItem("openMessageCount"));
+    var unreadMessageCount = absoluteOpenMessageCount - saveOpenMessageCount
+    var changeElementForNotice = document.getElementById('csv_message_notification')
+    var changeElementForMessageCount = document.getElementById('csv_message_unread_count')
+    changeElementForNotice.innerHTML = '<span>通知あり</span>'
+    changeElementForMessageCount.innerHTML = `<p>未読通知<span style="color:red">${unreadMessageCount}件</p>`
 }
 
 
