@@ -36,8 +36,8 @@
                 request.addEventListener('load', (event) => { // ロードさせ実行
                     const response = event.target.responseText; // 受け取ったテキストを返す
                     var responseArray = convertCsvToArray(response); //csvファイルを連想配列にするためのメソッドを呼び出し。
-                    console.log(localStorage.getItem('openMessageCount'));
                     var saveMessageCount = readLocalStorage('openMessageCount') //Local Storageより既読件数を取得
+                    console.log(saveMessageCount);
                     var openMessageCount = responseNotificationCount(responseArray);
                     localStorage["absoluteOpenMessageCount"] = openMessageCount;
                     if (parseInt(saveMessageCount) < openMessageCount){
@@ -104,15 +104,12 @@
             return openMessageAbsoluteCount;
         }
 
-        csvReturnsInformations('test_1.csv');//取得したCSVデータ
-
         function readLocalStorage(key){
           if ( localStorage.getItem(key) != '' ){
             var readToLocalStrageMessageCount = localStorage.getItem(key)
           }else{
             var readToLocalStrageMessageCount = 0
           }
-
           return readToLocalStrageMessageCount
         }
 
@@ -125,6 +122,7 @@
             location.reload();
           }
         }
+        csvReturnsInformations('test_1.csv');//取得したCSVデータ
         strageReset('openMessageCount');
       </script>
     <% end %>
@@ -138,4 +136,5 @@ $(function() {
   document.getElementsByTagName('head')[0].appendChild(viewport);
 });
 </script>
+
 </html>
