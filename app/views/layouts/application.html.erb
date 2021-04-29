@@ -25,7 +25,6 @@
       <p id = "csv_message_unread_count"></p>
       <p><%=link_to 'sessionリセット', session_delete_path,method: :post %>
     </header>
-
     <%= yield %>
     <% if user_signed_in?  && action_name != 'practice_third' %>
       <% @since_registration = 5 %>
