@@ -36,10 +36,12 @@
                 request.addEventListener('load', (event) => { // ロードさせ実行
                     const response = event.target.responseText; // 受け取ったテキストを返す
                     var responseArray = convertCsvToArray(response); //csvファイルを連想配列にするためのメソッドを呼び出し。
-                    var saveMessageCount = readLocalStorage('messageCount') //Local Storageより既読件数を取得
-                    var [openTextCount,displayElementLastId] = responseNotificationCount(responseArray);
-                    if (parseInt(saveMessageCount) < openTextCount){
-                      var unreadMessageCount = openTextCount - saveMessageCount
+                    var saveMessageCount = readLocalStorage('openMessageCount') //Local Storageより既読件数を取得
+                    console.log(saveMessageCount);
+                    var openMessageCount = responseNotificationCount(responseArray);
+                    localStorage["absoluteOpenMessageCount"] = openMessageCount;
+                    if (parseInt(saveMessageCount) < openMessageCount){
+                      var unreadMessageCount = openMessageCount - saveMessageCount
                       var changeElementForNotice = document.getElementById('csv_message_notification')
                       var changeElementForMessageCount = document.getElementById('csv_message_unread_count')
                       changeElementForNotice.innerHTML = '<span>通知あり</span>'
@@ -96,22 +98,18 @@
                 if (changeFormatOpenDate === changeFormatToday || parseInt(reverseCsvArrayData[i]['Id']) >= parseInt(sinceRegistration)){ //日付指定メニューが本日のものなのか、もしくはCSVのIdがsinceRegistrationより低いものなのか判別
                     // openMessageCount++;
                     openMessageAbsoluteCount++;
-                    displayElementLastId = reverseCsvArrayData[i]['Id']
                 }
 
             }
-            return [openMessageAbsoluteCount,displayElementLastId];
+            return openMessageAbsoluteCount;
         }
 
-        csvReturnsInformations('test_1.csv');//取得したCSVデータ
-
         function readLocalStorage(key){
-          if ( localStorage.getItem(key) != null ){
+          if ( localStorage.getItem(key) != '' ){
             var readToLocalStrageMessageCount = localStorage.getItem(key)
           }else{
             var readToLocalStrageMessageCount = 0
           }
-
           return readToLocalStrageMessageCount
         }
 
@@ -124,7 +122,8 @@
             location.reload();
           }
         }
-        strageReset('messageCount');
+        csvReturnsInformations('test_1.csv');//取得したCSVデータ
+        strageReset('openMessageCount');
       </script>
     <% end %>
   </body>
@@ -137,4 +136,5 @@ $(function() {
   document.getElementsByTagName('head')[0].appendChild(viewport);
 });
 </script>
+
 </html>

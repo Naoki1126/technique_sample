@@ -197,14 +197,13 @@ function clickEvent(){
                 var [resultHtml,displayTextCount,lastElementId] = responseHtml(reverseCsvResultArrayDatas,messageParent.length,displayElementLastId);
                 displayElementLastId = lastElementId;
                 outputCsvTargetElements[lastTargetNum].innerHTML = resultHtml;
-                sessionPostRequest();
+                sessionPostRequest(); 
             }
         }
     }
 }
 
 
- 
 function sessionPostRequest() {
         const req = new XMLHttpRequest(); // HTTPでファイルを読み込む
         var openDisplayMessageCount = document.getElementsByClassName('message_outline_parent').length;
