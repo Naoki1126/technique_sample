@@ -1,1 +1,12 @@
-<h2>投稿一覧ページです</h2>
+<h2>投稿ページです</h2>
+
+<%= form_with model:@newpost, local: true do |f| %>
+    <div class= "postimage-body-box">
+        <p>タイトル入力</p>
+        <%= f.text_field :title %>
+        <br>
+        <p>投稿内容入力</p>
+        <%= f.text_area :caption, size:"55x12" %>
+        <%= f.submit "新規投稿" ,class:'postimage-new-button' %>
+    </div>
+<% end %>
