@@ -4,7 +4,7 @@ class PostsController < ApplicationController
     def index
         @posts = Post.all
         @hashtags = Hashtag.all
-        post_hashtag = PostHashtag.all
+        @post_hashtag = PostHashtag.all
     end
 
     def new
@@ -13,9 +13,8 @@ class PostsController < ApplicationController
     end
 
     def create
-        @newpost = Post.new
-        @newpost.title = params[:title]
-        @newpost.caption = params[:caption]
+        @newpost = Post.new(post_params)
+        @newpost.user_id = current_user.id
 
         if @newpost.save
             hashtag = extract_hashtag(@newpost.caption)
@@ -54,11 +53,12 @@ class PostsController < ApplicationController
             post_hashtag = PostHashtag.new #中間テーブルのインスタンスを作成
             post_hashtag.post_id = @newpost.id 
             post_hashtag.hashtag_id = tag.id
+            post_hashtag.save
         end
     end
 
     def post_params
-        params.require(:post).permit(:title, :caption, :user_id)
+        params.require(:post).permit(:title, :caption)
       end
     
 
