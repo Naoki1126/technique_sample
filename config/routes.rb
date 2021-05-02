@@ -12,6 +12,5 @@ Rails.application.routes.draw do
   post 'session/save',to: 'session#save'
   post 'session/delete',to: 'session#destroy',as: 'session_delete'
 
-
   resources :posts
 end

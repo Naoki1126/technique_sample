@@ -52,8 +52,8 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # gem 'mysql2'
 
-  gem 'better_errors'
-  gem 'binding_of_caller'
+  # gem 'better_errors'
+  # gem 'binding_of_caller'
   gem 'byebug'
 
 end
@@ -70,4 +70,6 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "jquery-rails"
 gem 'devise'
+gem "refile", require: "refile/rails", github: 'manfe/refile'
+gem 'refile-mini_magick'
 
