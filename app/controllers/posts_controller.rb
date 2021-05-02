@@ -4,7 +4,17 @@ class PostsController < ApplicationController
     def index
         @posts = Post.all
         @hashtags = Hashtag.all
-        @post_hashtag = PostHashtag.all
+        @post_hashtags = PostHashtag.all
+        @posts.each do |post|
+            hash = post.attributes
+            post_hashtag_id = @post_hashtags.select{|ph| ph.post_id == post.id }
+            hashtags = []
+            @hashtags.each do |hashtag|
+                hashtags << hashtag if post_hashtag_id.include?(hashtag.id)
+            end
+        end
+
+
     end
 
     def new
@@ -16,9 +26,9 @@ class PostsController < ApplicationController
         @newpost = Post.new(post_params)
         @newpost.user_id = current_user.id
         hashtag = extract_hashtag(@newpost.caption)
-        save_hashtag(hashtag)
         @newpost.caption = delete_of_hashtag_text(@newpost.caption)
         @newpost.save!
+        save_hashtag(hashtag)
         redirect_to posts_path
 
     end

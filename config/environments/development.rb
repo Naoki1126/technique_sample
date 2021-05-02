@@ -51,10 +51,12 @@ Rails.application.configure do
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
+  # unless Rails.env.production?
   # config.web_console.whitelisted_ips = '0.0.0.0/0'
+  # end
   # BetterErrors::Middleware.allow_ip! "0.0.0.0/0"
   # Raises error for missing translations
-  config.action_view.raise_on_missing_translations = true
+  config.action_view.raise_on_missing_translations = false
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
