@@ -15,12 +15,11 @@ class PostsController < ApplicationController
     def create
         @newpost = Post.new(post_params)
         @newpost.user_id = current_user.id
-
-        if @newpost.save
-            hashtag = extract_hashtag(@newpost.caption)
-            save_hashtag(hashtag)
-            redirect_to posts_path
-        end
+        hashtag = extract_hashtag(@newpost.caption)
+        save_hashtag(hashtag)
+        @newpost.caption = delete_of_hashtag_text(@newpost.caption)
+        @newpost.save!
+        redirect_to posts_path
 
     end
 
@@ -53,13 +52,16 @@ class PostsController < ApplicationController
             post_hashtag = PostHashtag.new #中間テーブルのインスタンスを作成
             post_hashtag.post_id = @newpost.id 
             post_hashtag.hashtag_id = tag.id
-            post_hashtag.save
+            post_hashtag.save!
         end
+    end
+
+    def delete_of_hashtag_text(text)
+        text.gsub(/[#＃][\w\p{Han}ぁ-ヶｦ-ﾟー]+/,"") #渡された文字列の中より#で始まる文字列を””に変換する
     end
 
     def post_params
         params.require(:post).permit(:title, :caption)
-      end
-    
+    end
 
 end
