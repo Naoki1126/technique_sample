@@ -1,8 +1,17 @@
 class HashtagsController < ApplicationController
     include HashtagMethods
     def index
-        @hashtags = Hashtag.all.select(:id,:name)
-        @hashtag_count = PostHashtag.all.group(:hashtag_id).count
+        hashtags = Hashtag.all.select(:id,:name)
+        hashtag_count = PostHashtag.all.group(:hashtag_id).count
+        @hashtags = []
+        hashtags.each_with_index do |hashtag,i|
+            hashtag = hashtag.attributes
+            hashtag["count"] = hashtag_count[hashtag["id"]]
+            @hashtags << hashtag
+        end
+        if @hashtags.length > 1
+            @hashtags = @hashtags.sort{ |a,b| b["count"] <=> a["count"]}
+        end
     end
 
     def show

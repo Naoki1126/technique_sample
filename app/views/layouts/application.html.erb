@@ -9,7 +9,7 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body style="width: 320px;">
+  <body>
     <header>
       <div style="font-size: calc( 320px / 24)">
         <li><%= link_to 'CSV出力テスト(Ruby)', csv_test_ruby_path %></li>
@@ -20,6 +20,9 @@
         <li><%= link_to 'CSV通知出力(js)未読件数をlocalstorageに保存', save_to_readcount_for_localstorage_path %></li>
         <li><%= link_to 'CSV通知出力(js)未読件数をlocalstorageから読むためのチェックページ',check_localstorage_read_path %></li>
         <li><%= link_to 'CSV通知出力(js)未読件数のチェック',check_localstorage_read_path %>
+        <li><%= link_to '画像の投稿', new_post_path %></li>
+        <li><%= link_to '投稿一覧', posts_path %></li>
+        <li><%= link_to 'ハッシュタグの一覧', hashtags_path %></li>
       </div>
       <p id = 'csv_message_notification'></p>
       <p id = "csv_message_unread_count"></p>
@@ -123,11 +126,11 @@
   </body>
 
 <script type="text/javascript">
-$(function() {
-  var viewport = document.createElement('meta');
-  viewport.setAttribute('name', 'viewport');
-  viewport.setAttribute('content', 'width=320');
-  document.getElementsByTagName('head')[0].appendChild(viewport);
-});
+// $(function() {
+//   var viewport = document.createElement('meta');
+//   viewport.setAttribute('name', 'viewport');
+//   viewport.setAttribute('content', 'width=320');
+//   document.getElementsByTagName('head')[0].appendChild(viewport);
+// });
 </script>
 </html>
