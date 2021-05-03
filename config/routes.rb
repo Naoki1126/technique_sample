@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   post 'session/delete',to: 'session#destroy',as: 'session_delete'
 
   resources :posts
+  resources :hashtags, only: [:index, :show]
 end
