@@ -43,7 +43,7 @@ class PostsController < ApplicationController
     def update
         @post = Post.find(params[:id])
         strong_paramater = post_params
-        post_params["image"] = @post.image_id if strong_paramater["image"].to_s.length > 2 #ハッシュタグの実装には関係ないです。
+        post_params["image"] = @post.image_id if strong_paramater["image"].to_s.length <= 2 #ハッシュタグの実装には関係ないです。
         delete_records_related_to_hashtag(params[:id]) #こちらのメソッドで中間テーブルとハッシュタグのレコードを削除
         @post.update(post_params) 
         hashtag = extract_hashtag(@post.caption) #投稿よりハッシュタグを取得
