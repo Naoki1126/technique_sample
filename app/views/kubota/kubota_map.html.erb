@@ -6,7 +6,6 @@
         height: 100%;
         width: 100%;
         margin: 0 auto;
-        border: 1px solid black;
         border-radius: 10px;
         
         }
@@ -22,6 +21,7 @@
     body{
         width: auto;
         height: 100%;
+        background: linear-gradient(151deg, white, #f9efd4b0);
         /* background-color: #e6ffff; */
     }
 
@@ -35,7 +35,10 @@
 
     #map_input_container{
         text-align: center;
-        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
     }
 
     #map_submit{
@@ -47,6 +50,7 @@
         transition: all 1500ms;
         font-size: 20px;
         font-family: 'sans-serif';
+        border: none;
 
     }
 
@@ -54,19 +58,45 @@
         background-color: blue;
         color: white;
     }
+
+    .search_input{
+        border: 1px solid gray;
+        box-shadow: 1px 1px 7px gray;
+    }
+
+    #marriage_target{
+        width: 200px;
+        background-image: url("/assets/kubota_logo1.png");
+        background-repeat: no-repeat;
+        background-size: 200px 200px;
+        background-position: center;
+        height: 150px;
+        margin: 0 auto;
+    }
+
+    @keyframes fadeIn{
+        0%{
+            opacity: 0;
+            transform: scale(0);
+        }
+        100%{
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
 </style>
 
-<h1 style="cursor: pointer" id="marriage_target">RYO SEARCHER</h1>
+<p style="cursor: pointer" id="marriage_target"></p>
 
 <%= form_with url: map_request_path, method: :get,remote: true do |m| %>
     <div id = "map_input_container">
-        <%= m.text_field :address %><br>
+        <%= m.text_field :address,placeholder: 'Search',class: 'search_input' %>
         <%#= m.submit 'Learn About RYO',id: 'map_submit' %>
-        <input type="submit" name="commit" value="Learn About RYO" id="map_submit">
+        <input type="submit" name="commit" value="input" id="map_submit" style="display: none;">
     </div>
 <% end %>
 
-<div id="map"></div>
+<div id="map" style="opacity: 0;"></div>
 
 <script>
     let mapInstance = []
@@ -111,17 +141,17 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY'] %>&callback=initMap" async defer></script>
 
 <script>
-let target = document.getElementById('marriage_target')
-let targetButton = document.getElementById('map_submit')
-target.onclick = function(){
-    if (target.textContent == 'RYO SEARCHER'){
-        target.textContent = "TOMOYO SEARCHER"
-        targetButton.value = "Learn About TOMOYO"
-    }else{
-        target.textContent = 'RYO SEARCHER'
-        targetButton.value = "Learn About RYO"
-    }
-}
+// let target = document.getElementById('marriage_target')
+// let targetButton = document.getElementById('map_submit')
+// target.onclick = function(){
+//     if (target.textContent == 'RYO SEARCHER'){
+//         target.textContent = "TOMOYO SEARCHER"
+//         targetButton.value = "Learn About TOMOYO"
+//     }else{
+//         target.textContent = 'RYO SEARCHER'
+//         targetButton.value = "Learn About RYO"
+//     }
+// }
 
 
 // var response_value;
@@ -155,6 +185,7 @@ document.getElementById("map_submit").onclick = function(){
                 
             });
         }
+        document.getElementById("map").style.animation = "fadeIn 3s forwards";
     });
     request.open('GET', '/kubota/map_request', true); // csvのパスを指定
     request.send();
