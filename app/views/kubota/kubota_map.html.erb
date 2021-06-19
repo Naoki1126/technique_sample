@@ -149,7 +149,10 @@ document.getElementById("map_submit").onclick = function(){
                     content: `<p>${response_value["data"][i]["place"]}</p>`
             });
             marker[i].addListener("click", function(element){
+                mapInstance.setCenter(pos[i])
+                // mapInstance.zoom = 11
                 infoWindow[i].open(mapInstance, marker[i]);
+                
             });
         }
     });
