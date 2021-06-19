@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   get 'session/read', to: 'session#read'
   post 'session/save',to: 'session#save'
   post 'session/delete',to: 'session#destroy',as: 'session_delete'
+  get '/kubota', to: 'kubota#index',as: 'kubota'
+  get '/kubota/kubota_map', to: 'kubota#kubota_map',as: 'kubota_map'
+  get '/kubota/map_request', to: 'kubota#map', as: 'map_request'
+
 
   resources :posts
   resources :hashtags, only: [:index, :show]

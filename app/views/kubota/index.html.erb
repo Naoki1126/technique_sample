@@ -1,0 +1,37 @@
+<style>
+
+    #kubota_button_container{
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+        padding-top: 300px;
+    }
+
+    button{
+        background-color: white;
+        border: 1px solid aqua;
+        color: aqua;
+        width: 300px;
+        padding: 10px 40px;
+        height:100px;
+        font-size: 24px;
+        transition: all 3s;
+    }
+
+    button:hover{
+        background-color: aqua;
+        color: white;
+        border: 1px solid white;
+    }
+
+
+</style>
+
+
+<div id = "kubota_button_container">
+    <%= link_to kubota_map_path do %>
+        <button id="marriage_target">KUBOTA</button>
+    <% end %>
+</div>
+
+

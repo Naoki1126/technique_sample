@@ -1,0 +1,122 @@
+<style>
+    body{
+        
+    }
+    #map{
+        height: 100%;
+        width: 100%;
+        margin: 0 auto;
+        }
+
+    h1{
+        text-align: center;
+        background-color: #ff991b;
+        border: 1px solid black;
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    body{
+        width: auto;
+        height: 100%;
+        background-color: black;
+    }
+
+    #address{
+        height: 25px;
+        width: 300px;
+        border-radius: 14px;
+        text-decoration:none;
+        outline: none;
+    }
+
+    #map_input_container{
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    #map_submit{
+        background-color: white;
+        border: 2px solid black;
+        padding: 4px 10px;
+        margin: 20px;
+        font-weight: bold;
+        transition: all 1500ms;
+        font-size: 20px;
+
+    }
+
+    #map_submit:hover{
+        background-color: blue;
+        color: white;
+    }
+</style>
+
+<h1 style="cursor: pointer" id="marriage_target">RYO SEARCHER</h1>
+
+<%= form_with url: map_request_path, method: :get,remote: true do |m| %>
+    <div id = "map_input_container">
+        <%= m.text_field :address %><br>
+        <%#= m.submit 'Learn About RYO',id: 'map_submit' %>
+        <input type="submit" name="commit" value="Learn About RYO" id="map_submit">
+    </div>
+<% end %>
+
+<div id="map"></div>
+
+<script>
+    let mapInstance = []
+    let markerDatas;
+    let markers;
+    let marker = [];
+    console.log(markerDatas);
+
+    function initMap(){
+        mapInstance = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 36.6233354, lng: 138.1622222},
+            zoom: 13
+        });
+
+        mapInstance.addListener('click', function(e) {
+            getClickLatLng(e.latLng, mapInstance);
+        });
+    }
+
+    function getClickLatLng(lat_lng, mapInstance) {
+        console.log(lat_lng.lat());
+        console.log(lat_lng.lng());
+        // document.getElementById('event_latitude').value = lat_lng.lat();
+        // document.getElementById('event_longitude').value = lat_lng.lng();
+
+// マーカーを設置
+        // if(marker!=null)
+        //     marker.setMap(null)
+        //     marker = new google.maps.Marker({
+        //         position: lat_lng,
+        //         map: mapInstance
+        // });
+// 座標の中心をずらす
+        mapInstance.panTo(lat_lng);
+    }
+    window.addEventListener('load', function() {
+        let map = document.getElementById('map');
+        map.style.width = `${window.innerWidth * 0.7}` + `px`;
+        map.style.height = `${window.innerHeight * 0.7}` + `px`;
+    });
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY'] %>&callback=initMap" async defer></script>
+
+<script>
+let target = document.getElementById('marriage_target')
+let targetButton = document.getElementById('map_submit')
+target.onclick = function(){
+    if (target.textContent == 'RYO SEARCHER'){
+        target.textContent = "TOMOYO SEARCHER"
+        targetButton.value = "Learn About TOMOYO"
+    }else{
+        target.textContent = 'RYO SEARCHER'
+        targetButton.value = "Learn About RYO"
+    }
+}
+
+</script>
