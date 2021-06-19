@@ -1,16 +1,19 @@
 <style>
     body{
-        
+        font-family: 'sans-serif';
     }
     #map{
         height: 100%;
         width: 100%;
         margin: 0 auto;
+        border: 1px solid black;
+        border-radius: 10px;
+        
         }
 
     h1{
         text-align: center;
-        background-color: #ff991b;
+        background-color: #ffe1bc00;
         border: 1px solid black;
         width: 60%;
         margin: 0 auto;
@@ -19,7 +22,7 @@
     body{
         width: auto;
         height: 100%;
-        background-color: black;
+        /* background-color: #e6ffff; */
     }
 
     #address{
@@ -43,6 +46,7 @@
         font-weight: bold;
         transition: all 1500ms;
         font-size: 20px;
+        font-family: 'sans-serif';
 
     }
 
@@ -74,7 +78,7 @@
     function initMap(){
         mapInstance = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 36.6233354, lng: 138.1622222},
-            zoom: 13
+            zoom: 7
         });
 
         mapInstance.addListener('click', function(e) {
@@ -118,5 +122,40 @@ target.onclick = function(){
         targetButton.value = "Learn About RYO"
     }
 }
+
+
+// var response_value;
+
+document.getElementById("map_submit").onclick = function(){
+    let marker = []
+    let pos = []
+    let infoWindow = []
+    let request = new XMLHttpRequest();
+    request.addEventListener('load', function(event){ // ロードさせ実行
+        const response = event.target.responseText; // 受け取ったテキストを返す
+        let response_value = JSON.parse(response)
+        console.log(response_value["data"])
+        for( let i = 0; i < response_value["data"].length; i++){
+                pos[i] = new google.maps.LatLng(
+                response_value["data"][i]["latitude"],
+                response_value["data"][i]["longitude"]
+            )
+                mapInstance.setCenter(pos[i])
+                marker[i] = new google.maps.Marker({
+                map: mapInstance,
+                position: pos[i]
+            })
+            infoWindow[i] = new google.maps.InfoWindow({
+                    content: `<p>${response_value["data"][i]["place"]}</p>`
+            });
+            marker[i].addListener("click", function(element){
+                infoWindow[i].open(mapInstance, marker[i]);
+            });
+        }
+    });
+    request.open('GET', '/kubota/map_request', true); // csvのパスを指定
+    request.send();
+}
+
 
 </script>
