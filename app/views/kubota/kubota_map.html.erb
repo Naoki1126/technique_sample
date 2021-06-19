@@ -31,6 +31,8 @@
         border-radius: 14px;
         text-decoration:none;
         outline: none;
+        font-size: 20px;
+        padding-left: 1%;
     }
 
     #map_input_container{
@@ -77,11 +79,11 @@
     @keyframes fadeIn{
         0%{
             opacity: 0;
-            transform: scale(0);
+            transform: scale(0) rotate(360deg);
         }
         100%{
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) rotate(0deg);
         }
     }
 </style>
@@ -134,7 +136,7 @@
     }
     window.addEventListener('load', function() {
         let map = document.getElementById('map');
-        map.style.width = `${window.innerWidth * 0.7}` + `px`;
+        map.style.width = `${window.innerWidth * 0.9}` + `px`;
         map.style.height = `${window.innerHeight * 0.7}` + `px`;
     });
 </script>
@@ -157,6 +159,7 @@
 // var response_value;
 
 document.getElementById("map_submit").onclick = function(){
+    document.getElementById("map").style.animation = ""
     let marker = []
     let pos = []
     let infoWindow = []
@@ -185,7 +188,7 @@ document.getElementById("map_submit").onclick = function(){
                 
             });
         }
-        document.getElementById("map").style.animation = "fadeIn 3s forwards";
+        document.getElementById("map").style.animation = "fadeIn 3s forwards 1s";
     });
     request.open('GET', '/kubota/map_request', true); // csvのパスを指定
     request.send();
