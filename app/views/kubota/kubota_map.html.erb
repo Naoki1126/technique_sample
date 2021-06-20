@@ -74,6 +74,7 @@
         background-position: center;
         height: 150px;
         margin: 0 auto;
+        opacity: 0;
     }
 
     @keyframes fadeIn{
@@ -86,6 +87,12 @@
             transform: scale(1) rotate(0deg);
         }
     }
+
+    #kaiseki{
+        text-align: center;
+        font-weight: bold;
+        opacity: 0;
+    }
 </style>
 
 <p style="cursor: pointer" id="marriage_target"></p>
@@ -97,7 +104,9 @@
         <input type="submit" name="commit" value="input" id="map_submit" style="display: none;">
     </div>
 <% end %>
-
+<div id="kaiseki_wrapper">
+    <p id="kaiseki">解析中・・・</p>
+</div>
 <div id="map" style="opacity: 0;"></div>
 
 <script>
@@ -157,9 +166,21 @@
 
 
 // var response_value;
+var count = 0
 
 document.getElementById("map_submit").onclick = function(){
     document.getElementById("map").style.animation = ""
+    kaisekiAnimation()
+    var kaisekiAnimationTimer = setInterval(function(){
+        
+        count++
+        console.log(count)
+        if (count > 1){
+            console.log("aaaaa");
+            clearInterval(kaisekiAnimationTimer);
+        }
+        kaisekiAnimation();
+    },1800);
     let marker = []
     let pos = []
     let infoWindow = []
@@ -188,11 +209,38 @@ document.getElementById("map_submit").onclick = function(){
                 
             });
         }
-        document.getElementById("map").style.animation = "fadeIn 3s forwards 1s";
+        document.getElementById("map").style.animation = "fadeIn 3s forwards 5600ms";
     });
     request.open('GET', '/kubota/map_request', true); // csvのパスを指定
     request.send();
 }
 
+function oneCharacterByfadeInAnimation(element,delaySpeed){
+    if ($(element).length !== 0 ){
+       $(element).children().andSelf().contents().each(function() {
+           if (this.nodeType == 3) {
+           $(this).replaceWith($(this).text().replace(/(\S)/g, '<span>$1</span>'));
+           }
+       });
+       // 一文字ずつフェードインさせる
+       $(element).css({'opacity':1});
+       for (var i = 0; i <= $(element).children().size(); i++){
+           $(element).children('span:eq('+i+')').css('opacity','0');
+       }
+       for (var i = 0; i <= $(element).children().size(); i++) {
+        //    $(element).children('span:eq('+i+')').delay( delaySpeed * i).animate({'opacity':1},50);
+           $(element).children('span:eq('+i+')').css("animation",`fadeIn 1s forwards ${i * delaySpeed}ms`);
+       };
+   }
+}
 
+function kaisekiAnimation(){
+    oneCharacterByfadeInAnimation(document.getElementById("kaiseki"),200)
+    setTimeout(function(){
+        document.getElementById("kaiseki").remove();
+        setTimeout(function(){
+            document.getElementById("kaiseki_wrapper").innerHTML = "<p id='kaiseki'>解析中・・・</p>"
+        },100);
+    }, 1400);
+}
 </script>

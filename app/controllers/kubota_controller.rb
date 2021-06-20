@@ -28,27 +28,27 @@ class KubotaController < ApplicationController
         return_value = {
             "data":[
                 {
-                    "place": "久保田の実家",
+                    "place": "家❶",
                     "latitude": 36.57742818363322,
                     "longitude": 120.0319015
                 },
                 {
-                    "place": "久保田りょう",
+                    "place": "カフェ",
                     "latitude":36.999,
                     "longitude": 122.99999
                 },
                 {
-                    "place": "久保田という男",
+                    "place": "会社",
                     "latitude": 36.55555,
                     "longitude": 120.0319015
                 },
                 {
-                    "place": "久保田という先生",
+                    "place": "実家",
                     "latitude": 36.57742818363322,
                     "longitude": 125.999990
                 },
                 {
-                    "place": "久保田の昔の家",
+                    "place": "現在地",
                     "latitude": 38.44444444,
                     "longitude": 128.9999999
                 }
