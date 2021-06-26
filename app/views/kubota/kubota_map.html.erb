@@ -21,13 +21,13 @@
     body{
         width: auto;
         height: 100%;
-        background: linear-gradient(151deg, white, #f9efd4b0);
+        background: linear-gradient(180deg, black, #ffc933b0);
         /* background-color: #e6ffff; */
     }
 
     #address{
-        height: 25px;
-        width: 300px;
+        height: 4vh;
+        width: 35vw;
         border-radius: 14px;
         text-decoration:none;
         outline: none;
@@ -74,24 +74,28 @@
         background-position: center;
         height: 150px;
         margin: 0 auto;
-        opacity: 0;
     }
 
     @keyframes fadeIn{
         0%{
             opacity: 0;
-            transform: scale(0) rotate(360deg);
+            transform: scale(3);
         }
         100%{
             opacity: 1;
-            transform: scale(1) rotate(0deg);
+            transform: scale(1);
         }
     }
 
     #kaiseki{
         text-align: center;
+        color: white;
         font-weight: bold;
         opacity: 0;
+    }
+
+    #kaiseki_wrapper{
+        height:30px;
     }
 </style>
 
@@ -119,7 +123,9 @@
     function initMap(){
         mapInstance = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 36.6233354, lng: 138.1622222},
-            zoom: 7
+            zoom: 7,
+            // mapTypeId: google.maps.MapTypeId.SATELLITE
+            mapTypeId: google.maps.MapTypeId.HYBRID
         });
 
         mapInstance.addListener('click', function(e) {
@@ -130,17 +136,6 @@
     function getClickLatLng(lat_lng, mapInstance) {
         console.log(lat_lng.lat());
         console.log(lat_lng.lng());
-        // document.getElementById('event_latitude').value = lat_lng.lat();
-        // document.getElementById('event_longitude').value = lat_lng.lng();
-
-// マーカーを設置
-        // if(marker!=null)
-        //     marker.setMap(null)
-        //     marker = new google.maps.Marker({
-        //         position: lat_lng,
-        //         map: mapInstance
-        // });
-// 座標の中心をずらす
         mapInstance.panTo(lat_lng);
     }
     window.addEventListener('load', function() {
@@ -151,21 +146,7 @@
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY'] %>&callback=initMap" async defer></script>
 
-<script>
-// let target = document.getElementById('marriage_target')
-// let targetButton = document.getElementById('map_submit')
-// target.onclick = function(){
-//     if (target.textContent == 'RYO SEARCHER'){
-//         target.textContent = "TOMOYO SEARCHER"
-//         targetButton.value = "Learn About TOMOYO"
-//     }else{
-//         target.textContent = 'RYO SEARCHER'
-//         targetButton.value = "Learn About RYO"
-//     }
-// }
-
-
-// var response_value;
+<script>;
 var count = 0
 
 document.getElementById("map_submit").onclick = function(){
@@ -174,9 +155,7 @@ document.getElementById("map_submit").onclick = function(){
     var kaisekiAnimationTimer = setInterval(function(){
         
         count++
-        console.log(count)
         if (count > 1){
-            console.log("aaaaa");
             clearInterval(kaisekiAnimationTimer);
         }
         kaisekiAnimation();
@@ -188,14 +167,13 @@ document.getElementById("map_submit").onclick = function(){
     request.addEventListener('load', function(event){ // ロードさせ実行
         const response = event.target.responseText; // 受け取ったテキストを返す
         let response_value = JSON.parse(response)
-        console.log(response_value["data"])
         for( let i = 0; i < response_value["data"].length; i++){
-                pos[i] = new google.maps.LatLng(
+            pos[i] = new google.maps.LatLng(
                 response_value["data"][i]["latitude"],
                 response_value["data"][i]["longitude"]
             )
-                mapInstance.setCenter(pos[i])
-                marker[i] = new google.maps.Marker({
+            mapInstance.setCenter(pos[i])
+            marker[i] = new google.maps.Marker({
                 map: mapInstance,
                 position: pos[i]
             })
@@ -203,7 +181,18 @@ document.getElementById("map_submit").onclick = function(){
                     content: `<p>${response_value["data"][i]["place"]}</p>`
             });
             marker[i].addListener("click", function(element){
+                for(let j =0; j < marker.length;j++){
+                    marker[j].animation = google.maps.Animation.DROP
+                }
                 mapInstance.setCenter(pos[i])
+                var zoom = 0
+                var zoomingMap = setInterval(function(){
+                    zoom++
+                    if (zoom > 14){
+                        clearInterval(zoomingMap)
+                    }
+                    mapInstance.setZoom(zoom)
+                },300);
                 // mapInstance.zoom = 11
                 infoWindow[i].open(mapInstance, marker[i]);
                 
@@ -243,4 +232,6 @@ function kaisekiAnimation(){
         },100);
     }, 1400);
 }
+
+var appendElement = document.createElement('p')
 </script>

@@ -57,7 +57,7 @@ Rails.application.configure do
 
   if Rails.env.deveropment?
     config.web_console.whitelisted_ips = '0.0.0.0/0'
-    end
+  end
   # BetterErrors::Middleware.allow_ip! "0.0.0.0/0"
   # Raises error for missing translations
   config.action_view.raise_on_missing_translations = false

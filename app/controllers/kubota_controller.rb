@@ -30,27 +30,27 @@ class KubotaController < ApplicationController
                 {
                     "place": "家❶",
                     "latitude": 36.57742818363322,
-                    "longitude": 120.0319015
+                    "longitude": 138.0319015
                 },
                 {
                     "place": "カフェ",
-                    "latitude":36.999,
-                    "longitude": 122.99999
+                    "latitude":36.999322,
+                    "longitude": 138.99999
                 },
                 {
                     "place": "会社",
                     "latitude": 36.55555,
-                    "longitude": 120.0319015
+                    "longitude": 139.0319015
                 },
                 {
                     "place": "実家",
-                    "latitude": 36.57742818363322,
-                    "longitude": 125.999990
+                    "latitude": 36.5833318363322,
+                    "longitude": 138.999990
                 },
                 {
                     "place": "現在地",
-                    "latitude": 38.44444444,
-                    "longitude": 128.9999999
+                    "latitude": 37.44444444,
+                    "longitude": 138.199999
                 }
             ]
         }
