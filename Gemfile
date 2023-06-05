@@ -74,3 +74,7 @@ gem "refile", require: "refile/rails", github: 'manfe/refile'
 gem 'refile-mini_magick'
 gem 'dotenv-rails'
 gem 'geocoder'
+
+group :production do
+  gem 'mysql2'
+end
