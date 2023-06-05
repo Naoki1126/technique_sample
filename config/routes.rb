@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get '/kubota', to: 'kubota#index',as: 'kubota'
   get '/kubota/kubota_map', to: 'kubota#kubota_map',as: 'kubota_map'
   get '/kubota/map_request', to: 'kubota#map', as: 'map_request'
-
+  get '/api/get_test', to: 'api#get_test'
 
   resources :posts
   resources :hashtags, only: [:index, :show]

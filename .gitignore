@@ -30,3 +30,6 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /.env
+
+
+git remote set-url origin https://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@github.com/Naoki1126/technique_sample.git
