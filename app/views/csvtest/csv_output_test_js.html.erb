@@ -119,7 +119,7 @@ function csv_array(data) {
     console.log(dataArray[1][1])
 
 }
-csv_data_output_array('test_1.csv');
+csv_data_output_array('/test_1.csv');
 //データをArray型に変換するのはここまで
 
 //tableに対して出力ここから
@@ -164,7 +164,7 @@ function csv_array_for_table(data) {
     console.log(changeToday);
     output_csv_for_table.innerHTML = insertElement; // 表示
 }
-csv_data_for_table('test_1.csv'); // csvのパス
+csv_data_for_table('/test_1.csv'); // csvのパス
 //テーブルに対しての出力ここまで
 
 //連想配列
@@ -239,7 +239,7 @@ function convertCsvToArray(csv) {
 }
     // return resultArray;
 
-var csvData = csv_data_for_hash('test_1.csv');//取得したCSVデータ
+var csvData = csv_data_for_hash('/test_1.csv');//取得したCSVデータ
 console.log(csvData);
 // const resultArray = 
 
