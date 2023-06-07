@@ -1,7 +1,7 @@
 class KubotaController < ApplicationController
 
     def index
-        render layout: false
+        # render layout: false
     end
 
     def kubota_map
