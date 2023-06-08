@@ -7,6 +7,7 @@ class PostsController < ApplicationController
         @hashtags = Hashtag.all
         @post_hashtags = PostHashtag.all
         @post_objects = creating_structures(posts: @posts,post_hashtags: @post_hashtags,hashtags: @hashtags)
+        @number = rand_cash
     end
 
     def new
@@ -64,6 +65,16 @@ class PostsController < ApplicationController
 
     def post_params
         params.require(:post).permit(:title, :caption,:image)
+    end
+
+    
+    # Rails.cache.fetchを使いキャッシュからArticle.allを取得する
+    # cache_articlesというキーで保存。cache_articlesはキャッシュの有効期間
+    def rand_cash
+        Rails.cache.delete('cache_rand')
+        Rails.cache.fetch("cache_rand", expires_in: 15.minutes) do
+            return rand(100)
+        end
     end
 
 end
